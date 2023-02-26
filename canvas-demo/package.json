@@ -1,0 +1,20 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.ts",
+  "scripts": {
+    "pack": "webpack --config webpack.config.js && copy src\\index.html dist\\index.html",
+    "start": "start ./dist/index.html"
+  },
+  "author": "Nicholas Denaro",
+  "license": "MIT",
+  "dependencies": {
+    "engine": "file:../engine"
+  },
+  "devDependencies": {
+    "ts-loader": "^9.4.2",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
