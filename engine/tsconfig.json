@@ -1,13 +1,16 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "ES2022",
         "target": "ES2022",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "esModuleInterop": false,
+        "moduleResolution": "classic",
+        "types": ["node"]
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "**/*.spec.ts"]
+    "exclude": ["node_modules", "**/*.spec.ts"],
 }
