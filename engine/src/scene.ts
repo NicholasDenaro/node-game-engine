@@ -13,7 +13,7 @@ export class Scene implements CanActivate {
     private entityBuffer = new Array<Entity>();
     private controllers = new Array<Controller>();
 
-    private isActive: boolean;
+    private isActive = false;
 
     activate() {
         this.isActive = true;

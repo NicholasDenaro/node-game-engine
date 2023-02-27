@@ -7,7 +7,7 @@ export interface Controller {
 export class ControllerBinding {
     
     private state: ControllerState = ControllerState.Unheld;
-    private duration: number;
+    private duration: number = 0;
     private details = {};
 
     constructor(private controlName: string) {

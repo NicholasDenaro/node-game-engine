@@ -1,11 +1,23 @@
 {
-  "name": "engine",
+  "name": "game-engine",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "src/index.ts",
+  "typings": "src/index.ts",
   "scripts": {
     "build": "tsc"
   },
   "author": "Nicholas Denaro",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.14.2"
+  },
+  "exports": {
+    ".": {
+      "browser": {
+        "default": "./dist/index.js"
+      }
+    }
+  }
 }

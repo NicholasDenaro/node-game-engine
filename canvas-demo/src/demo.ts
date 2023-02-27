@@ -1,5 +1,4 @@
-import {Canvas2DView, ControllerBinding, Engine, Entity, FixedTickEngine, KeyboardController, Painter2D, Scene} from 'engine';
-import { ControllerState } from 'engine/src/controller';
+import {Canvas2DView, ControllerBinding, Engine, Entity, FixedTickEngine, KeyboardController, Painter2D, Scene, ControllerState} from 'engine';
 
 const engine: Engine = new FixedTickEngine(144);
 

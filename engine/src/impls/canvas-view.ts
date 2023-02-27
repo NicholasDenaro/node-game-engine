@@ -13,7 +13,13 @@ export class Canvas2DView implements View {
         this.canvas.width = width;
         this.canvas.height = height;
         this.canvas.style.width = `${this.canvas.width * 96 / dpi}px`;
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d') || {
+            canvas: HTMLCanvasElement,
+            getContextAttributes(): CanvasRenderingContext2DSettings {
+                return {
+                } as CanvasRenderingContext2DSettings;
+            }
+        } as unknown as CanvasRenderingContext2D;
         this.text = document.createElement('p');
         this.text.innerText = '';
         this.text.style.display = 'none';

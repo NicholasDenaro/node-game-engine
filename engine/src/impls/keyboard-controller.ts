@@ -1,4 +1,4 @@
-import { Controller, ControllerBinding, ControllerState } from "../controller";
+import { Controller, ControllerBinding, ControllerState } from "../controller.js";
 
 export class KeyboardController implements Controller {
     private controls: {[key: string]: ControllerBinding} = {};
