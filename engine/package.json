@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "src/index.ts",
-  "typings": "src/index.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --declaration"
   },
   "author": "Nicholas Denaro",
   "license": "MIT",

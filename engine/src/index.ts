@@ -1,11 +1,12 @@
-import { Controller, ControllerBinding, ControllerState } from "./controller.js";
-import { Engine } from "./engine.js";
-import { Entity } from "./entity.js";
-import { Canvas2DView, Painter2D } from "./impls/canvas-view.js";
-import { FixedTickEngine } from "./impls/fixed-tick-engine.js";
-import { KeyboardController } from "./impls/keyboard-controller.js";
-import { Scene } from "./scene.js";
-import { View } from "./view.js";
+import { Controller, ControllerBinding, ControllerState } from "./controller";
+import { Engine } from "./engine";
+import { Entity } from "./entity";
+import { Canvas2DView, Painter2D } from "./impls/canvas-view";
+import { FixedTickEngine } from "./impls/fixed-tick-engine";
+import { KeyboardController } from "./impls/keyboard-controller";
+import { Painter } from "./painter";
+import { Scene } from "./scene";
+import { View } from "./view";
 
 export {
     Engine,
@@ -18,5 +19,6 @@ export {
     ControllerState,
     KeyboardController,
     ControllerBinding,
+    Painter,
     Painter2D
 }

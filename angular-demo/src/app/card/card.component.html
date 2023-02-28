@@ -1,0 +1,8 @@
+<div *ngIf="isUp">
+    <p [class]="suitColor+' left'">{{suit}}{{value}}</p>
+    <p [class]="suitColor+ ' large'">{{suit}}</p>
+    <p [class]="suitColor+' right'">{{value}}{{suit}}</p>
+</div>
+<div *ngIf="!isUp">
+    <div style="background-color: blue;"></div>
+</div>
