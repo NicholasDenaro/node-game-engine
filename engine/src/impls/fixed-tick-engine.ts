@@ -1,18 +1,12 @@
 import { Engine } from "../engine";
-import { Scene } from "../scene";
 
-export class FixedTickEngine implements Engine {
-
-    private isRunning: boolean = false;
-
-    private sceneBuffer = new Array<{ key: string; scene: Scene; }>;
-
-    private scenes: { [key: string]: Scene; } = {};
+export class FixedTickEngine extends Engine {
 
     private tickCount = 0;
     private frameTime: number;
 
     constructor(private ticksPerSecond: number) {
+        super();
         this.frameTime = 1000 / this.ticksPerSecond;
         console.log(`frameTime=${this.frameTime}`);
         setInterval(() => {
@@ -23,15 +17,6 @@ export class FixedTickEngine implements Engine {
             }
             this.tickCount = 0;
         }, 1000);
-    }
-
-    addScene(key: string, scene: Scene): void {
-        if (!this.isRunning) {
-            this.scenes[key] = scene;
-        }
-        else {
-            this.sceneBuffer.push({key, scene});
-        }
     }
 
     start(): Promise<void> {
@@ -76,19 +61,4 @@ export class FixedTickEngine implements Engine {
         this.isRunning = false;
         return Promise.resolve();
     }
-
-    async draw(): Promise<void> {
-        const keys = Object.keys(this.scenes);
-        for (let i = 0 ; i < keys.length; i++) {
-            await this.scenes[keys[i]].draw();
-        }
-    }
-
-    async tick(): Promise<void> {
-        const keys = Object.keys(this.scenes);
-        for (let i = 0 ; i < keys.length; i++) {
-            this.scenes[keys[i]].tick();
-        }
-    }
-    
 }
