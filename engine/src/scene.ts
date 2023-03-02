@@ -10,7 +10,8 @@ export class Scene implements CanActivate {
     }
 
     private entitites = new Array<Entity>();
-    private entityBuffer = new Array<Entity>();
+    private entityAddBuffer = new Array<Entity>();
+    private entityRemoveBuffer = new Array<Entity>();
     private controllers = new Array<Controller>();
 
     private isActive = false;
@@ -41,16 +42,34 @@ export class Scene implements CanActivate {
 
     addEntity(entity: Entity) {
         if (this.isActive) {
-            this.entityBuffer.push(entity);
+            this.entityAddBuffer.push(entity);
         } else {
             this.entitites.push(entity);
         }
     }
 
+    removeEntity(entity: Entity) {
+        if (this.isActive) {
+            this.entityRemoveBuffer.push(entity);
+        } else {
+            this.entitites.splice(this.entitites.indexOf(entity), 1);
+        }
+    }
+
     async tick(): Promise<void> {
+
         if (!this.isActive) {
             return;
         }
+        
+        const entitiesToAdd = this.entityAddBuffer.splice(0, this.entityAddBuffer.length);
+        entitiesToAdd.forEach(entity => {
+            this.entitites.push(entity);
+        });
+        const entitiesToRemove = this.entityRemoveBuffer.splice(0, this.entityRemoveBuffer.length);
+        entitiesToRemove.forEach(entity => {
+            this.entitites.splice(this.entitites.indexOf(entity), 1);
+        });
 
         for (let i = 0; i < this.controllers.length; i++) {
             await this.controllers[i].tick();
@@ -59,11 +78,6 @@ export class Scene implements CanActivate {
         for (let i = 0; i < this.entitites.length; i++) {
             await this.entitites[i].tick(this);
         }
-
-        const entitiesToAdd = this.entityBuffer.splice(0, this.entityBuffer.length);
-        entitiesToAdd.forEach(entity => {
-            this.entitites.push(entity);
-        });
     }
 
     debugInfo(info: any): void {

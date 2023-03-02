@@ -1,4 +1,4 @@
-import { Painter2D, Scene } from "game-engine";
+import { Scene } from "game-engine";
 import { CardDeckComponent } from "src/app/card-deck/card-deck.component";
 import { AngularEntity } from "src/utils/angular-entity";
 import { AngularPainter } from "src/utils/angular-painter";

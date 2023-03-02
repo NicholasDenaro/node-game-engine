@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { GameView as GameView } from 'src/utils/view-ref-';
+import { AfterViewInit, Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { GameView as GameView } from 'src/utils/game-view';
 import { Subject, Observable} from "rxjs";
 
 @Component({
@@ -9,16 +9,15 @@ import { Subject, Observable} from "rxjs";
 })
 export class HandComponent extends GameView implements AfterViewInit {
 
-  private subject = new Subject<any>();
   @ViewChild('viewContainerRef', { read: ViewContainerRef })
   vcr!: ViewContainerRef;
 
-  ngAfterViewInit(): void {
-    this.vcrs['cards'] = this.vcr;
-    this.subject.next({});
+  constructor(private eref: ElementRef) {
+    super();
   }
 
-  override hook(): Observable<any> {
-    return this.subject.asObservable();
+  ngAfterViewInit(): void {
+    this.vcrs.refs['cards'] = this.vcr;
+    this.doHook(this.eref.nativeElement);
   }
 }
