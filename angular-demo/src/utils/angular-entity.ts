@@ -14,6 +14,10 @@ export class AngularEntity extends Entity {
         this.entities.push(entity);
     }
 
+    getEntities(): AngularEntity[] {
+        return this.entities;
+    }
+
     async tick(scene: Scene): Promise<void> {
         for (let i = 0; i < this.entities.length; i++) {
             await this.entities[i].tick(scene);

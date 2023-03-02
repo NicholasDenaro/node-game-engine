@@ -1,7 +1,7 @@
 import { Component, Type, ViewContainerRef } from "@angular/core";
 import { Painter } from "game-engine";
 import { AngularEntity } from "./angular-entity";
-import { GameView } from "./view-ref-";
+import { GameView } from "./game-view";
 
 export class AngularPainter implements Painter {
     private entity!: AngularEntity;
@@ -14,10 +14,14 @@ export class AngularPainter implements Painter {
         this.entity = entity;
     }
 
-    paint(args: {[key: string]: ViewContainerRef}): void {
-        if (!args || !args[this.key]) return;
-        const component = args[this.key].createComponent(this.template);
+    paint(args: {view: GameView, refs: {[key: string]: ViewContainerRef}}): void {
+        if (!args || !args.refs[this.key]) {
+            return;
+        }
+        
+        const component = args.refs[this.key].createComponent(this.template);
         component.instance.init(this.entity);
+        args.view.children.push(component.instance);
         for (let i = 0; i < this.entities.length; i++) {
             component.instance.hook().subscribe(() => {
                 this.entities[i].painter.paint(component.instance.vcrs);
