@@ -1,4 +1,3 @@
-import { Scene } from "game-engine";
 import { CardStackComponent } from "src/app/card-stack/card-stack.component";
 import { AngularEntity } from "../utils/angular-entity";
 import { CardEntity } from "./card-entity";
@@ -23,6 +22,10 @@ export class CardStackEntity extends AngularEntity {
     drawCards(amount: number): CardEntity[] {
         this.count -= amount;
         return this.entities.splice(this.entities.length - amount) as CardEntity[];
+    }
+
+    peekCard(): CardEntity {
+        return this.entities[this.entities.length - 1] as CardEntity;
     }
 
     cards(): CardEntity[] {

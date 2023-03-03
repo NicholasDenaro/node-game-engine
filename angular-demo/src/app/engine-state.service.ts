@@ -14,6 +14,7 @@ export class EngineStateService {
   scene!: Scene;
   heldCard: CardEntity | null = null;
   heldStack: CardStackEntity | null = null;
+  cardLastFrom: CardStackEntity | CardDeckEntity | null = null;
 
   dealtStack = new CardDeckEntity('dealt', true, false);
   sort1 = new CardDeckEntity('sort1', true, false);
@@ -74,43 +75,80 @@ export class EngineStateService {
     this.engine.doTick();
   }
 
-  pickUp(card: CardEntity) {
+  pickUp(from: CardDeckEntity) {
     if (!this.isHolding()) {
+      const card = from.drawCard();
       this.heldCard = card;
+      this.cardLastFrom = from;
       this.scene.addEntity(card);
       this.engine.doTick();
     }
   }
 
-  pickUpStack(stack: CardEntity[]) {
+  pickUpStack(from: CardStackEntity, pickupCount: number) {
     if (!this.isHolding()) {
       this.heldStack = new CardStackEntity('cards');
-      stack.forEach(card => {
+      from.drawCards(pickupCount).forEach(card => {
         this.heldStack?.addCard(card);
       });
 
+      this.cardLastFrom = from;
       this.scene.addEntity(this.heldStack);
       this.engine.doTick();
     }
   }
 
-  drop(cardHolder: CardDeckEntity | CardStackEntity) {
+  drop(dropTo: CardDeckEntity | CardStackEntity) {
     if (this.isHolding()) {
       if (this.heldCard) {
-        this.scene.removeEntity(this.heldCard!);
-        cardHolder.addEntity(this.heldCard!);
-        this.heldCard = null;
-        this.engine.doTick();
+        if(this.canDropTo(dropTo)) {
+          this.scene.removeEntity(this.heldCard!);
+          dropTo.addEntity(this.heldCard!);
+          this.heldCard = null;
+          this.engine.doTick();
+        }
+        
       }
       else if (this.heldStack) {
-        this.scene.removeEntity(this.heldStack!);
-        this.heldStack.cards().forEach(card => {
-          cardHolder.addEntity(card);
-        });
-        this.heldStack = null;
-        this.engine.doTick();
+        if(this.canDropTo(dropTo)) {
+          this.scene.removeEntity(this.heldStack!);
+          this.heldStack.cards().forEach(card => {
+            dropTo.addEntity(card);
+          });
+          this.heldStack = null;
+          this.engine.doTick();
+        }
       }
     }
+  }
+
+  canDropTo(dropTo: CardDeckEntity | CardStackEntity): boolean {
+
+    if (dropTo == this.cardLastFrom) {
+      return true;
+    }
+
+    let toCheck = this.heldCard || (this.heldStack?.getEntities()[0] as CardEntity);
+
+    if (dropTo == this.sort1 || dropTo == this.sort2 || dropTo == this.sort3 || dropTo == this.sort4) {
+      if (dropTo.count == 0 && Number.parseInt(toCheck.value) == 1) {
+        return true;
+      }
+
+      const cardTo = dropTo.peekCard();
+      return cardTo && cardTo.isUp && (Number.parseInt(cardTo.value) == Number.parseInt(toCheck.value) - 1) && toCheck.suit == cardTo.suit;
+    }
+    else {
+      if (dropTo.count == 0 && Number.parseInt(toCheck.value) == 13) {
+        return true;
+      }
+  
+      const cardTo = dropTo.peekCard();
+      return cardTo && cardTo.isUp && (Number.parseInt(cardTo.value) == Number.parseInt(toCheck.value) + 1) && toCheck.isOppositeSuit(cardTo);
+    }
+    
+
+    return false;
   }
 
   isHolding(): boolean {

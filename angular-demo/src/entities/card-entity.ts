@@ -31,4 +31,17 @@ export class CardEntity extends AngularEntity {
     makeFaceUp() {
         this.isUp = true;
     }
+
+    isOppositeSuit(other: CardEntity): boolean {
+        switch (this.suit) {
+            case '♠':
+            case '♣':
+                return other.suit == '♥' || other.suit == '♦';
+            case '♥':
+            case '♦':
+                return other.suit == '♠' || other.suit == '♣';
+        }
+
+        return false;
+    }
 }
