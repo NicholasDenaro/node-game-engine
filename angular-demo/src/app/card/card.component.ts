@@ -1,5 +1,4 @@
-import { Component, ElementRef, HostBinding, HostListener, OnInit } from '@angular/core';
-import { of } from 'rxjs';
+import { Component, ElementRef, HostBinding, OnInit } from '@angular/core';
 import { CardEntity } from 'src/entities/card-entity';
 import { GameView } from 'src/utils/game-view';
 import { EngineStateService } from '../engine-state.service';
@@ -10,27 +9,30 @@ import { EngineStateService } from '../engine-state.service';
   styleUrls: ['./card.component.less']
 })
 export class CardComponent extends GameView implements OnInit  {
-  suit: string | undefined = undefined;
-  value: string | undefined = undefined;
+  suit: string = '';
+  value: string = '';
   suitColor: string = 'black';
   isUp: boolean = true;
   @HostBinding()
-  style: string ='';
+  style: string = '';
 
   constructor(private eref: ElementRef, private engineState: EngineStateService) {
-    super();
+    super(eref);
   }
 
-  ngAfterViewInit(): void {
+  override ngAfterViewInit(): void {
     this.eref.nativeElement.style = this.style;
-    this.doHook(this.eref.nativeElement);
+    super.ngAfterViewInit();
   }
 
   ngOnInit(): void {
-    this.suit = (this.entity as CardEntity).suit;
-    this.value = (this.entity as CardEntity).value;
-    this.isUp = (this.entity as CardEntity).isUp;
-    switch (this.value) {
+    this.suit = this.entityAs<CardEntity>().suit;
+    this.value = this.entityAs<CardEntity>().value;
+    this.isUp = this.entityAs<CardEntity>().isUp;
+    switch (this.entityAs<CardEntity>().value) {
+      case '1':
+        this.value = 'A';
+        break;
       case '11':
         this.value = 'J';
         break;
@@ -41,7 +43,7 @@ export class CardComponent extends GameView implements OnInit  {
         this.value = 'K';
         break;
     }
-    switch(this.suit) {
+    switch(this.entityAs<CardEntity>().suit) {
       case '♥':
       case '♦':
         this.suitColor = 'red';

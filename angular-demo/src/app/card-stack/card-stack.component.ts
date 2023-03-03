@@ -11,50 +11,45 @@ import { EngineStateService } from '../engine-state.service';
 export class CardStackComponent extends GameView {
   count: number = 0;
 
-  @ViewChild('stack', {read: ViewContainerRef})
-  stack!: ViewContainerRef;
-
-  constructor(private eref: ElementRef, private engineState: EngineStateService) {
-    super();
+  constructor(eref: ElementRef, private engineState: EngineStateService) {
+    super(eref);
   }
 
-  ngAfterViewInit(): void {
-    this.vcrs.refs['cards'] = this.stack;
-    this.doHook(this.eref.nativeElement);
+  override ngAfterViewInit(): void {
+    super.ngAfterViewInit();
     let i = 0;
     for (let i = 0; i < this.children.length; i++) {
-      (this.children[i] as any).style = `position: absolute; top: ${i * 2}em`;
+      (this.children[i] as any).style = `position: absolute; top: ${i * 3.5}vh`;
     }
   }
 
   @HostListener('mouseup', ['$event'])
   onMouseUp(evt: MouseEvent) {
     if (this.engineState.isHolding()) {
-      this.engineState.drop(this.entity as CardStackEntity);
+      this.engineState.drop(this.entityAs<CardStackEntity>());
     }
-    else if ((this.entity as CardStackEntity).hasCards()) {
+    else if (this.entityAs<CardStackEntity>().hasCards()) {
       let srcCard = evt.target as HTMLElement;
       while (srcCard.tagName != 'APP-CARD') {
         srcCard = srcCard.parentElement!;
       }
       const index = this.children.findIndex(child => child.nativeElement == srcCard);
-      this.pickCard((this.entity as CardStackEntity).count - index);
+      this.pickCard(this.entityAs<CardStackEntity>().count - index);
     }
   }
 
   private pickCard(pickupCount: number) {
-    const cards = (this.entity as CardStackEntity).drawCards(pickupCount);
+    const stack = this.entityAs<CardStackEntity>();
+    const cards = stack.drawCards(pickupCount);
+    cards.forEach(card => stack.addCard(card));
     if (cards[0].isUp) {
-      this.engineState.pickUpStack(cards);
+      this.engineState.pickUpStack(stack, pickupCount);
     }
     else {
       if (cards.length == 1) {
         cards[0].makeFaceUp();
         this.engineState.engine.doTick();
       }
-      cards.forEach(card => {
-        (this.entity as CardStackEntity).addCard(card);
-      });
     }
   }
 }

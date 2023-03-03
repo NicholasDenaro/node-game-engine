@@ -1,15 +1,16 @@
 div {
-    width: 120px;
-    height: 150px;
+    width: 20vh;
+    height: 24vh;
     border: solid black 1px;
     background-color: white;
+    position: relative;
 }
 
 .back {
-    margin: 1em;
-    border: 2em dashed red;
+    margin: 1vh;
+    border: 7vh dashed red;
     width: auto;
-    height: calc(150px - 2em);
+    height: 22vh;
     box-sizing: border-box;
 }
 
@@ -19,13 +20,30 @@ div {
 
 p {
     margin: 0;
+    padding: 0;
     text-align: center;
     user-select: none;
-    font-size: 2em;
+    font-size: 3.5vh;
+    position: absolute;
+}
+
+.left {
+    top: 1vh;
+    left: 1vh;
+}
+
+.right {
+    bottom: 1vh;
+    right: 1vh;
 }
 
 .large {
-    font-size: 4em;
+    width: 100%;
+    margin-top: 3.5vh !important;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    font-size: 13.5vh;
 }
 
 #host {
