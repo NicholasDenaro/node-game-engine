@@ -36,10 +36,21 @@ export class EngineStateService {
 
     this.engine.start();
     this.engine.doTick();
+    this.autoPlay();
   }
 
-  undo() {
-    this.engine.undo();
+  private auto: NodeJS.Timer | null = null;
+  autoPlay() {
+    if (this.auto) {
+      clearInterval(this.auto);
+      this.auto = null;
+      return;
+    }
+
+    this.auto = setInterval(() => {
+        this.rules?.autoPlay(this.heldCard || this.heldStack);
+        this.engine.doTick();
+    }, 100);
   }
 
   reset() {

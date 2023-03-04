@@ -16,7 +16,7 @@ export class AppComponent extends GameView {
 
   constructor(private engineState: EngineStateService, ref: ElementRef, ngZone: NgZone, cdr: ChangeDetectorRef) {
     super(ref);
-    this.view = new AngularView(this, ngZone, cdr)
+    this.view = new AngularView(this, ngZone, cdr);
   }
 
   override ngAfterViewInit(): void {

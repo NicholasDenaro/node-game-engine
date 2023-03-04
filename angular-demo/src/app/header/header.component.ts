@@ -30,13 +30,21 @@ export class HeaderComponent {
 
     this.openMenu = (event.target as HTMLElement).innerText;
     if ((event.target as HTMLElement).innerText == 'Reset') {
+      this.openMenu = '';
       this.engineState.reset();
     }
     else if ((event.target as HTMLElement).innerText == 'Options') {
       this.options = this.engineState.rules?.options || [];
     }
-    else if ((event.target as HTMLElement).innerText == 'Undo') {
-      this.engineState.undo();
+    else if ((event.target as HTMLElement).innerText.indexOf('Auto') > -1) {
+      this.openMenu = '';
+      this.engineState.autoPlay();
+      if ((event.target as HTMLElement).innerText.indexOf('On') > -1) {
+        (event.target as HTMLElement).innerText = 'Auto:Off'
+      }
+      else {
+        (event.target as HTMLElement).innerText = 'Auto:On'
+      }
     }
     event.stopPropagation();
   }
