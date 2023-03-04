@@ -1,4 +1,4 @@
-import { Engine } from "game-engine";
+import { Engine, View } from "game-engine";
 
 export class ObserverEngine extends Engine {
 

@@ -28,6 +28,11 @@ export abstract class Engine {
     }
 
     async tick(): Promise<void> {
+        const scenes = this.sceneBuffer.splice(0, this.sceneBuffer.length);
+        scenes.forEach(scene => {
+            this.scenes[scene.key] = scene.scene;
+        })
+
         const keys = Object.keys(this.scenes);
         for (let i = 0 ; i < keys.length; i++) {
             await this.scenes[keys[i]].tick();

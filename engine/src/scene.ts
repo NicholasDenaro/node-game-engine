@@ -9,7 +9,10 @@ export class Scene implements CanActivate {
 
     }
 
-    private entitites = new Array<Entity>();
+    private entities = new Array<Entity>();
+    public entitiesSlice() {
+        return this.entities.slice();
+    }
     private entityAddBuffer = new Array<Entity>();
     private entityRemoveBuffer = new Array<Entity>();
     private controllers = new Array<Controller>();
@@ -44,7 +47,7 @@ export class Scene implements CanActivate {
         if (this.isActive) {
             this.entityAddBuffer.push(entity);
         } else {
-            this.entitites.push(entity);
+            this.entities.push(entity);
         }
     }
 
@@ -52,7 +55,7 @@ export class Scene implements CanActivate {
         if (this.isActive) {
             this.entityRemoveBuffer.push(entity);
         } else {
-            this.entitites.splice(this.entitites.indexOf(entity), 1);
+            this.entities.splice(this.entities.indexOf(entity), 1);
         }
     }
 
@@ -64,19 +67,19 @@ export class Scene implements CanActivate {
         
         const entitiesToAdd = this.entityAddBuffer.splice(0, this.entityAddBuffer.length);
         entitiesToAdd.forEach(entity => {
-            this.entitites.push(entity);
+            this.entities.push(entity);
         });
         const entitiesToRemove = this.entityRemoveBuffer.splice(0, this.entityRemoveBuffer.length);
         entitiesToRemove.forEach(entity => {
-            this.entitites.splice(this.entitites.indexOf(entity), 1);
+            this.entities.splice(this.entities.indexOf(entity), 1);
         });
 
         for (let i = 0; i < this.controllers.length; i++) {
             await this.controllers[i].tick();
         }
 
-        for (let i = 0; i < this.entitites.length; i++) {
-            await this.entitites[i].tick(this);
+        for (let i = 0; i < this.entities.length; i++) {
+            await this.entities[i].tick(this);
         }
     }
 
@@ -89,6 +92,6 @@ export class Scene implements CanActivate {
             return;
         }
 
-        await this.view.draw(this.entitites);
+        await this.view.draw(this.entities);
     }
 }

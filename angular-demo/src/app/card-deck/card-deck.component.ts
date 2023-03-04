@@ -21,28 +21,17 @@ export class CardDeckComponent extends GameView implements OnInit {
     this.revealTop = this.entityAs<CardDeckEntity>().revealTop;
   }
 
-  @HostListener('click')
+  @HostListener('mouseup')
   onClick() {
     if (!this.engineState.isHolding() && this.entityAs<CardDeckEntity>().canDraw) {
       if (this.entityAs<CardDeckEntity>().count > 0) {
-        const cardEntity = this.entityAs<CardDeckEntity>().drawCard();
-        cardEntity.makeFaceUp();
-        this.engineState.dealtStack.addEntity(cardEntity);
-        this.engineState.engine.doTick();
+        this.engineState.deal(this.entityAs<CardDeckEntity>());
       }
       else {
-        while (this.engineState.dealtStack.count > 0) {
-          let card = this.engineState.dealtStack.drawCard();
-          card.makeFaceDown();
-          this.engineState.deck.addCard(card);
-        }
-        this.engineState.engine.doTick();
+        this.engineState.cycleDeck(this.entityAs<CardDeckEntity>());
       }
     }
-  }
 
-  @HostListener('mouseup')
-  onMouseUp() {
     if (!this.entityAs<CardDeckEntity>().canDraw) {
       if (this.engineState.isHolding()) {
         this.engineState.drop(this.entityAs<CardDeckEntity>());
