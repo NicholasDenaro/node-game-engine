@@ -28,9 +28,13 @@ export class CardDeckEntity extends AngularEntity {
         }
     }
 
-    drawCard(): CardEntity {
-        this.count--;
-        return this.entities.pop() as CardEntity;
+    drawCard(): CardEntity | null {
+        if (this.count > 0) {
+            this.count--;
+            return this.entities.pop() as CardEntity; 
+        }
+
+        return null;
     }
 
     peekCard(): CardEntity {

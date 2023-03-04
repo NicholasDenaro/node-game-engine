@@ -1,0 +1,15 @@
+<div class="header">
+    <div class="button">Games</div>
+    <div class="button">Options</div>
+    <div class="button">Undo</div>
+    <div class="button right">Reset</div>
+    <div class="menu" #menu>
+        <ng-container *ngFor="let option of options">
+            <div class="option">
+                <p>{{option.name}}</p>
+                <ng-container *ngIf="option.type == 'toggle'"></ng-container>
+                <input [type]="'checkbox'" [checked]="option.value" (change)="option.callback($event)"/>
+            </div>
+        </ng-container>
+    </div>
+</div>

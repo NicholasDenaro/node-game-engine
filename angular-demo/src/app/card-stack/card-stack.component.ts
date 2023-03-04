@@ -34,22 +34,7 @@ export class CardStackComponent extends GameView {
         srcCard = srcCard.parentElement!;
       }
       const index = this.children.findIndex(child => child.nativeElement == srcCard);
-      this.pickCard(this.entityAs<CardStackEntity>().count - index);
-    }
-  }
-
-  private pickCard(pickupCount: number) {
-    const stack = this.entityAs<CardStackEntity>();
-    const cards = stack.drawCards(pickupCount);
-    cards.forEach(card => stack.addCard(card));
-    if (cards[0].isUp) {
-      this.engineState.pickUpStack(stack, pickupCount);
-    }
-    else {
-      if (cards.length == 1) {
-        cards[0].makeFaceUp();
-        this.engineState.engine.doTick();
-      }
+      this.engineState.pickUpStack(this.entityAs<CardStackEntity>(),this.entityAs<CardStackEntity>().count - index);
     }
   }
 }

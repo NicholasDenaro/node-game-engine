@@ -7,6 +7,7 @@ import { HandComponent } from './hand/hand.component';
 import { CardStackComponent } from './card-stack/card-stack.component';
 import { CardDeckComponent } from './card-deck/card-deck.component';
 import { ViewDirective } from './view.directive';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ViewDirective } from './view.directive';
     HandComponent,
     CardStackComponent,
     CardDeckComponent,
-    ViewDirective
+    ViewDirective,
+    HeaderComponent
   ],
   imports: [
     BrowserModule
