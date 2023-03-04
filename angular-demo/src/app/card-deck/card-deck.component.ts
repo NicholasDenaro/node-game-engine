@@ -17,14 +17,14 @@ export class CardDeckComponent extends GameView implements OnInit {
   }
 
   ngOnInit(): void {
-    this.count = this.entityAs<CardDeckEntity>().count;
+    this.count = this.entityAs<CardDeckEntity>().count();
     this.revealTop = this.entityAs<CardDeckEntity>().revealTop;
   }
 
   @HostListener('mouseup')
   onClick() {
     if (!this.engineState.isHolding() && this.entityAs<CardDeckEntity>().canDraw) {
-      if (this.entityAs<CardDeckEntity>().count > 0) {
+      if (this.entityAs<CardDeckEntity>().count() > 0) {
         this.engineState.deal(this.entityAs<CardDeckEntity>());
       }
       else {

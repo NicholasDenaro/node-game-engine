@@ -1,16 +1,19 @@
 import { CardStackComponent } from "src/app/card-stack/card-stack.component";
-import { AngularEntity } from "../utils/angular-entity";
+import { ObserverEngine } from "src/utils/observer-engine";
+import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 import { CardEntity } from "./card-entity";
 
 export class CardStackEntity extends AngularEntity {
-    count = 0;
     constructor(placement: string) {
         super(CardStackComponent, placement);
     }
 
+    count(): number {
+        return this.entities.length;
+    }
+
     addCard(card: CardEntity) {
         super.addEntity(card);
-        this.count++;
     }
 
     override addEntity(entity: AngularEntity): void {
@@ -20,7 +23,6 @@ export class CardStackEntity extends AngularEntity {
     }
 
     drawCards(amount: number): CardEntity[] {
-        this.count -= amount;
         return this.entities.splice(this.entities.length - amount) as CardEntity[];
     }
 
@@ -33,6 +35,18 @@ export class CardStackEntity extends AngularEntity {
     }
 
     hasCards() {
-        return this.count > 0;
+        return this.entities.length > 0;
+    }
+
+    override save(): EntitySaveData {
+        ObserverEngine.constructors[CardStackEntity.name as any] = (edata) => {
+            const cse =  new CardStackEntity('');
+            cse.load(edata);
+            return cse;
+        }
+        return {
+            ...super.save(),
+            type: CardStackEntity.name,
+        }
     }
 }

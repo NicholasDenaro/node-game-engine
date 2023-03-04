@@ -1,11 +1,12 @@
 import { Type } from "@angular/core";
 import { Entity, Scene } from "game-engine";
 import { AngularPainter } from "./angular-painter";
+import { ObserverEngine } from "./observer-engine";
 
 export class AngularEntity extends Entity {
     protected entities: AngularEntity[] = [];
 
-    constructor(template: Type<any>, key: string) {
+    constructor(private template: Type<any>, public key: string) {
         super(new AngularPainter(template, key));
         (this.painter as AngularPainter).init(this);
     }
@@ -25,4 +26,35 @@ export class AngularEntity extends Entity {
 
         (this.painter as AngularPainter).setEntities(this.entities);
     }
+
+    override save(): EntitySaveData {
+        return {
+            ...super.save(),
+            template: this.template,
+            type: '',
+            key: this.key,
+            entities: this.entities.map(entity => entity.save())
+        }
+    }
+
+    override load(data: EntitySaveData) {
+        this.template = data.template;
+        this.key = data.key;
+        this.painter = new AngularPainter(this.template, this.key);
+        (this.painter as AngularPainter).init(this);
+        this.entities = data.entities.map(edata => {
+            const ctor = ObserverEngine.constructors[edata.type];
+            return ctor(edata) as AngularEntity;
+        });
+        super.load(data);
+    }
+}
+
+
+
+export type EntitySaveData = {
+    type: string,
+    template: Type<any>,
+    key: string,
+    entities: EntitySaveData[]
 }

@@ -1,18 +1,22 @@
 import { Scene } from "game-engine";
 import { CardDeckComponent } from "src/app/card-deck/card-deck.component";
-import { AngularEntity } from "src/utils/angular-entity";
+import { AngularEntity, EntitySaveData } from "src/utils/angular-entity";
 import { AngularPainter } from "src/utils/angular-painter";
+import { ObserverEngine } from "src/utils/observer-engine";
 import { CardEntity } from "./card-entity";
 
 export class CardDeckEntity extends AngularEntity {
-    count: number = 0;
-    constructor(placement: string, public readonly revealTop: boolean, public readonly canDraw: boolean) {
+    
+    constructor(placement: string, public revealTop: boolean, public canDraw: boolean) {
         super(CardDeckComponent, placement);
+    }
+
+    count(): number {
+        return this.entities.length;
     }
 
     addCard(card: CardEntity) {
         super.addEntity(card);
-        this.count++;
     }
 
     override addEntity(entity: AngularEntity): void {
@@ -29,8 +33,7 @@ export class CardDeckEntity extends AngularEntity {
     }
 
     drawCard(): CardEntity | null {
-        if (this.count > 0) {
-            this.count--;
+        if (this.count() > 0) {
             return this.entities.pop() as CardEntity; 
         }
 
@@ -46,5 +49,25 @@ export class CardDeckEntity extends AngularEntity {
             const j = Math.floor(Math.random() * (i + 1));
             [this.entities[i], this.entities[j]] = [this.entities[j], this.entities[i]];
         }
+    }
+
+    override save(): EntitySaveData | any {
+        ObserverEngine.constructors[CardDeckEntity.name as any] = (edata) => {
+            const cse =  new CardDeckEntity('', false, false);
+            cse.load(edata);
+            return cse;
+        }
+        return {
+            ...super.save(),
+            type: CardDeckEntity.name,
+            revealTop: this.revealTop,
+            canDraw: this.canDraw
+        }
+    }
+
+    override load(edata: any) {
+        this.revealTop = edata.revealTop;
+        this.canDraw = edata.canDraw;
+        super.load(edata);
     }
 }

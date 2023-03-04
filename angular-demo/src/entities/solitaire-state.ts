@@ -1,4 +1,5 @@
 import { Scene } from "game-engine";
+import { AngularEntity } from "src/utils/angular-entity";
 import { CardDeckEntity } from "./card-deck-entity";
 import { CardEntity } from "./card-entity";
 import { CardStackEntity } from "./card-stack-entity";
@@ -92,6 +93,24 @@ export class SolitaireRules implements GameRules {
     }
   }
 
+  rebind(scene: Scene) {
+    this.deck = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'deck') as CardDeckEntity;
+    this.dealtStack = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'dealt') as CardDeckEntity;
+    this.sort1 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort1') as CardDeckEntity;
+    this.sort2 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort2') as CardDeckEntity;
+    this.sort3 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort3') as CardDeckEntity;
+    this.sort4 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort4') as CardDeckEntity;
+    this.stacks = [];
+
+    const indexFinder = /stack(?<index>[0-9]+)/;
+    scene.entitiesSlice()
+    .filter(entity => entity instanceof CardStackEntity && entity.key.indexOf('stack') > -1)
+    .map(stack => stack as CardStackEntity)
+    .forEach(stack => {
+      this.stacks[Number.parseInt(indexFinder.exec(stack.key)?.groups?.['index'] as string) - 1] = stack;
+    });
+  }
+
   deal(deck: CardDeckEntity) {
     for (let i = 0; i < (this.getOption('deal 3') ? 3 : 1); i++) {
       const cardEntity = deck.drawCard();
@@ -108,6 +127,11 @@ export class SolitaireRules implements GameRules {
 
   canPickUpStack(stack: CardStackEntity, pickupCount: number): boolean {
     if (this.getOption(this.ruleKeys.norules)) {
+      const cards = stack.getEntities() as CardEntity[];
+      if (pickupCount == 1 && !cards[cards.length - 1].isUp) {
+        cards[cards.length - 1].makeFaceUp();
+        return false;
+      }
       return true;
     }
 
@@ -129,7 +153,7 @@ export class SolitaireRules implements GameRules {
       return;
     }
 
-    while (this.dealtStack.count > 0) {
+    while (this.dealtStack.count() > 0) {
       let card = this.dealtStack.drawCard();
       if (card) {
         card.makeFaceDown();
@@ -150,7 +174,7 @@ export class SolitaireRules implements GameRules {
     let toCheck = held instanceof CardEntity ? held : ((held as CardStackEntity)?.getEntities()[0] as CardEntity);
 
     if (dropTo == this.sort1 || dropTo == this.sort2 || dropTo == this.sort3 || dropTo == this.sort4) {
-        if (dropTo.count == 0 && Number.parseInt(toCheck.value) == 1) {
+        if (dropTo.count() == 0 && Number.parseInt(toCheck.value) == 1) {
           return true;
         }
     
@@ -158,11 +182,11 @@ export class SolitaireRules implements GameRules {
         return cardTo && cardTo.isUp && (Number.parseInt(cardTo.value) == Number.parseInt(toCheck.value) - 1) && toCheck.suit == cardTo.suit;
     }
     else {
-        if (dropTo.count == 0 && Number.parseInt(toCheck.value) == 13) {
+        if (dropTo.count() == 0 && Number.parseInt(toCheck.value) == 13) {
           return true;
         }
 
-        if (dropTo.count == 0 && !this.getOption(this.ruleKeys.kings)) {
+        if (dropTo.count() == 0 && !this.getOption(this.ruleKeys.kings)) {
           return true;
         }
     
@@ -171,9 +195,9 @@ export class SolitaireRules implements GameRules {
     }
   }
 
-  autoPlay(held: any): void {
+  autoPlay(held: any): boolean {
     if(held) {
-      return;
+      return false;
     }
 
     // Sort aces from dealth, only if deal3 is off
@@ -181,19 +205,22 @@ export class SolitaireRules implements GameRules {
     if (!this.getOption(this.ruleKeys.deal3)) {
       if (dealtCard && Number.parseInt(dealtCard.value) == 1) {
         // dealt stack
-        if (this.sort1.count == 0) {
+        if (this.sort1.count() == 0) {
           this.sort1.addCard(this.dealtStack.drawCard()!);
+          return true;
         }
-        else if (this.sort2.count == 0) {
+        else if (this.sort2.count() == 0) {
           this.sort2.addCard(this.dealtStack.drawCard()!);
+          return true;
         }
-        else if (this.sort3.count == 0) {
+        else if (this.sort3.count() == 0) {
           this.sort3.addCard(this.dealtStack.drawCard()!);
+          return true;
         }
-        else if (this.sort4.count == 0) {
+        else if (this.sort4.count() == 0) {
           this.sort4.addCard(this.dealtStack.drawCard()!);
+          return true;
         }
-        return;
       }
     }
     
@@ -209,52 +236,58 @@ export class SolitaireRules implements GameRules {
       // Flip cards
       if (!card.isUp) {
         card.makeFaceUp();
-        return;
+        return true;
       }
 
       // Sort aces
       if (Number.parseInt(card.value) == 1) {
         // stack card
-        if (this.sort1.count == 0) {
+        if (this.sort1.count() == 0) {
           this.sort1.addCard(stack.drawCards(1)[0]);
+          return true;
         }
-        else if (this.sort2.count == 0) {
+        else if (this.sort2.count() == 0) {
           this.sort2.addCard(stack.drawCards(1)[0]);
+          return true;
         }
-        else if (this.sort3.count == 0) {
+        else if (this.sort3.count() == 0) {
           this.sort3.addCard(stack.drawCards(1)[0]);
+          return true;
         }
-        else if (this.sort4.count == 0) {
+        else if (this.sort4.count() == 0) {
           this.sort4.addCard(stack.drawCards(1)[0]);
+          return true;
         }
       }
 
       // Send to sorting piles
-      if (this.deck.count == 0 && this.dealtStack.count == 0) {
+      if (this.deck.count() == 0 && this.dealtStack.count() == 0) {
         if (this.allCardsUp()) {
           if (this.canDropTo(this.sort1, stack, card)) {
             const drop = stack.drawCards(1);
             this.sort1.addCard(drop[0]);
-            return;
+            return true;
           }
           if (this.canDropTo(this.sort2, stack, card)) {
             const drop = stack.drawCards(1);
             this.sort2.addCard(drop[0]);
-            return;
+            return true;
           }
           if (this.canDropTo(this.sort3, stack, card)) {
             const drop = stack.drawCards(1);
             this.sort3.addCard(drop[0]);
-            return;
+            return true;
           }
           if (this.canDropTo(this.sort4, stack, card)) {
             const drop = stack.drawCards(1);
             this.sort4.addCard(drop[0]);
-            return;
+            return true;
           }
         }
       }
     }
+
+    return false;
   }
 
   private allCardsUp(): boolean {

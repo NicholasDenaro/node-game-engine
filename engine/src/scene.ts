@@ -1,5 +1,6 @@
 import { CanActivate } from "./can-activate";
 import { Controller, ControllerState } from "./controller";
+import { Engine } from "./engine";
 import { Entity } from "./entity";
 import { View } from "./view";
 
@@ -93,5 +94,13 @@ export class Scene implements CanActivate {
         }
 
         await this.view.draw(this.entities);
+    }
+
+    load(data: any) {
+        this.entities = [];
+        data.entities.forEach((edata: any) => {
+            const ctor = Engine.constructors[edata.type];
+            this.entities.push(ctor(edata) as Entity);
+        });
     }
 }
