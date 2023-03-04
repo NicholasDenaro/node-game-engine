@@ -1,27 +1,16 @@
 import { Scene } from "game-engine";
 import { CardComponent } from "src/app/card/card.component";
-import { AngularEntity } from "../utils/angular-entity";
+import { ObserverEngine } from "src/utils/observer-engine";
+import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 
 export class CardEntity extends AngularEntity {
-    held: boolean = false;
-    doPickup: boolean = false;
-    doDrop: boolean = false;
-    isUp: boolean = true;
-    constructor(public suit: string, public value: string, isUp: boolean) {
+    constructor(public suit: string, public value: string, public isUp: boolean) {
         super(CardComponent, 'cards');
         this.isUp = isUp;
     }
 
     override async tick(scene: Scene): Promise<void> {
         await super.tick(scene);
-    }
-
-    pickUp() {
-        this.held = true;
-    }
-
-    drop() {
-        this.held = false;
     }
 
     makeFaceDown() {
@@ -43,5 +32,26 @@ export class CardEntity extends AngularEntity {
         }
 
         return false;
+    }
+
+    override save(): EntitySaveData | any {
+        ObserverEngine.constructors[CardEntity.name as any] = (edata) => {
+            const cse =  new CardEntity('', '0', true);
+            cse.load(edata);
+            return cse;
+        }
+        return {
+            ...super.save(),
+            type: CardEntity.name,
+            suit: this.suit,
+            value: this.value,
+            isUp: this.isUp
+        }
+    }
+
+    override load(edata: any) {
+        this.suit = edata.suit;
+        this.value = edata.value;
+        this.isUp = edata.isUp;
     }
 }

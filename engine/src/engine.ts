@@ -1,6 +1,9 @@
+import { Entity } from "./entity";
 import { Scene } from "./scene";
 
 export abstract class Engine {
+
+    static readonly constructors: {[key: string]: (args: any) => Entity} = {};
 
     protected isRunning: boolean = false;
 

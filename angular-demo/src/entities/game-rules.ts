@@ -11,5 +11,6 @@ export interface GameRules {
     cycleDeck(deck: CardDeckEntity): void;
     pickUp(deck: CardDeckEntity): CardEntity | null;
     canPickUpStack(stack: CardStackEntity, pickupCount: number): boolean;
-    autoPlay(held: any): void;
+    autoPlay(held: any): boolean;
+    rebind(scene: Scene): void;
 }

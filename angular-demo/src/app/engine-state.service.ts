@@ -48,9 +48,24 @@ export class EngineStateService {
     }
 
     this.auto = setInterval(() => {
-        this.rules?.autoPlay(this.heldCard || this.heldStack);
-        this.engine.doTick();
+        if (this.rules?.autoPlay(this.heldCard || this.heldStack)) {
+          this.engine.doTick();
+        }
     }, 100);
+  }
+
+  hasMoreRedo() {
+    return this.engine.hasMoreRedo();
+  }
+
+  undo() {
+    this.engine.undo();
+    this.rules?.rebind(this.scene);
+  }
+
+  redo() {
+    this.engine.redo();
+    this.rules?.rebind(this.scene);
   }
 
   reset() {
@@ -62,7 +77,6 @@ export class EngineStateService {
     this.rules?.init(this.scene);
 
     this.scene.activate();
-    this.engine.doTick();
   }
 
   deal(deck: CardDeckEntity) {
@@ -83,7 +97,7 @@ export class EngineStateService {
         this.cardLastFrom = from;
         this.scene.addEntity(card);
       }
-      this.engine.doTick();
+      this.engine.doTick(false);
     }
   }
 
@@ -98,7 +112,7 @@ export class EngineStateService {
         this.cardLastFrom = from;
         this.scene.addEntity(this.heldStack);
       }
-      this.engine.doTick();
+      this.engine.doTick(false);
     }
   }
 
