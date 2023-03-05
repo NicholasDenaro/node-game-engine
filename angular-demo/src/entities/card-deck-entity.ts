@@ -4,9 +4,12 @@ import { AngularEntity, EntitySaveData } from "src/utils/angular-entity";
 import { AngularPainter } from "src/utils/angular-painter";
 import { ObserverEngine } from "src/utils/observer-engine";
 import { CardEntity } from "./card-entity";
+import { GameRules } from "./game-rules";
 
 export class CardDeckEntity extends AngularEntity {
     
+    cardsShown: number = 1;
+
     constructor(placement: string, public revealTop: boolean, public canDraw: boolean) {
         super(CardDeckComponent, placement);
     }
@@ -28,7 +31,8 @@ export class CardDeckEntity extends AngularEntity {
     override async tick(scene: Scene): Promise<void> {
         await super.tick(scene);
         if (this.entities.length > 0) {
-            (this.painter as AngularPainter).setEntities([this.entities[this.entities.length - 1]]);
+            const shownCards = this.entities.slice(Math.max(this.entities.length - this.cardsShown, 0));
+            (this.painter as AngularPainter).setEntities(shownCards);
         }
     }
 
@@ -61,13 +65,15 @@ export class CardDeckEntity extends AngularEntity {
             ...super.save(),
             type: CardDeckEntity.name,
             revealTop: this.revealTop,
-            canDraw: this.canDraw
+            canDraw: this.canDraw,
+            cardsShown: this.cardsShown
         }
     }
 
     override load(edata: any) {
         this.revealTop = edata.revealTop;
         this.canDraw = edata.canDraw;
+        this.cardsShown = edata.cardsShown;
         super.load(edata);
     }
 }

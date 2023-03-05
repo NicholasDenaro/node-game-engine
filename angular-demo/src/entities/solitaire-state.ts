@@ -1,5 +1,5 @@
 import { Scene } from "game-engine";
-import { AngularEntity } from "src/utils/angular-entity";
+import { EngineStateService } from "src/app/engine-state.service";
 import { CardDeckEntity } from "./card-deck-entity";
 import { CardEntity } from "./card-entity";
 import { CardStackEntity } from "./card-stack-entity";
@@ -7,6 +7,8 @@ import { GameRules } from "./game-rules";
 
 export class SolitaireRules implements GameRules {
 
+  private engine: EngineStateService | null = null;
+  private scene: Scene | null = null;
   ruleKeys = {
     deal3: 'deal 3',
     kings: 'only kings on empty',
@@ -18,7 +20,12 @@ export class SolitaireRules implements GameRules {
       name: 'deal 3',
       type: 'toggle',
       value: true,
-      callback: (val: any) => {this.options!.find(opt => opt.name == 'deal 3')!.value = val.srcElement.checked}
+      callback: async (val: any) => {
+        this.options!.find(opt => opt.name == 'deal 3')!.value = val.srcElement.checked;
+        this.dealtStack.cardsShown = this.getOption('deal 3') ? 3 : 1;
+        await this.dealtStack.tick(this.scene!);
+        this.engine?.engine.draw();
+      }
     },
     {
       name: 'only kings on empty',
@@ -47,9 +54,12 @@ export class SolitaireRules implements GameRules {
 
   stacks: CardStackEntity[] = [];
 
-  init(scene: Scene) {
+  init(engine: EngineStateService, scene: Scene) {
+    this.engine = engine;
+    this.scene = scene;
     scene.addEntity(this.deck = new CardDeckEntity('deck', true, true));
     scene.addEntity(this.dealtStack = new CardDeckEntity('dealt', true, false));
+    this.dealtStack.cardsShown = this.getOption('deal 3') ? 3 : 1;
     scene.addEntity(this.sort1 = new CardDeckEntity('sort1', true, false));
     scene.addEntity(this.sort2 = new CardDeckEntity('sort2', true, false));
     scene.addEntity(this.sort3 = new CardDeckEntity('sort3', true, false));
@@ -96,6 +106,7 @@ export class SolitaireRules implements GameRules {
   rebind(scene: Scene) {
     this.deck = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'deck') as CardDeckEntity;
     this.dealtStack = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'dealt') as CardDeckEntity;
+    this.dealtStack.cardsShown = this.getOption('deal 3') ? 3 : 1;
     this.sort1 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort1') as CardDeckEntity;
     this.sort2 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort2') as CardDeckEntity;
     this.sort3 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort3') as CardDeckEntity;

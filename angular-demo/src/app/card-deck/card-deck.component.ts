@@ -8,7 +8,7 @@ import { EngineStateService } from '../engine-state.service';
   templateUrl: './card-deck.component.html',
   styleUrls: ['./card-deck.component.less']
 })
-export class CardDeckComponent extends GameView implements OnInit {
+export class CardDeckComponent extends GameView implements OnInit, AfterViewInit {
   count: number = 0;
   revealTop: boolean = false;
 
@@ -19,6 +19,13 @@ export class CardDeckComponent extends GameView implements OnInit {
   ngOnInit(): void {
     this.count = this.entityAs<CardDeckEntity>().count();
     this.revealTop = this.entityAs<CardDeckEntity>().revealTop;
+  }
+
+  override ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    for (let i = 0; i < this.children.length; i++) {
+      (this.children[i] as any).style = `position: absolute; top: 0; left: ${i * 6.5}vh`;
+    }
   }
 
   @HostListener('mouseup')
