@@ -74,7 +74,7 @@ export class EngineStateService {
 
     this.engine.addScene('main', this.scene);
 
-    this.rules?.init(this.scene);
+    this.rules?.init(this, this.scene);
 
     this.scene.activate();
   }
