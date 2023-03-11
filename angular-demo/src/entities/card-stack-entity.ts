@@ -4,8 +4,12 @@ import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 import { CardEntity } from "./card-entity";
 
 export class CardStackEntity extends AngularEntity {
-    constructor(placement: string) {
+    public cardWidth: string = '';
+    public cardHeight: string = '';
+    constructor(placement: string, size: {width: string, height: string}) {
         super(CardStackComponent, placement);
+        this.cardWidth = size.width;
+        this.cardHeight = size.height;
     }
 
     count(): number {
@@ -14,6 +18,7 @@ export class CardStackEntity extends AngularEntity {
 
     addCard(card: CardEntity) {
         super.addEntity(card);
+        card.setSize(this.cardWidth, this.cardHeight);
     }
 
     override addEntity(entity: AngularEntity): void {
@@ -38,15 +43,17 @@ export class CardStackEntity extends AngularEntity {
         return this.entities.length > 0;
     }
 
-    override save(): EntitySaveData {
+    override save(): EntitySaveData | any {
         ObserverEngine.constructors[CardStackEntity.name as any] = (edata) => {
-            const cse =  new CardStackEntity('');
+            const cse =  new CardStackEntity('', {width: edata.cardWidth, height: edata.cardHeight});
             cse.load(edata);
             return cse;
         }
         return {
             ...super.save(),
             type: CardStackEntity.name,
+            cardWidth: this.cardWidth,
+            cardHeight: this.cardHeight,
         }
     }
 }

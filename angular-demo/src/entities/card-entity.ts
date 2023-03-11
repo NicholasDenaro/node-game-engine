@@ -4,6 +4,10 @@ import { ObserverEngine } from "src/utils/observer-engine";
 import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 
 export class CardEntity extends AngularEntity {
+
+    width: string = '10px';
+    height: string = '14px';
+
     constructor(public suit: string, public value: string, public isUp: boolean) {
         super(CardComponent, 'cards');
         this.isUp = isUp;
@@ -11,6 +15,11 @@ export class CardEntity extends AngularEntity {
 
     override async tick(scene: Scene): Promise<void> {
         await super.tick(scene);
+    }
+
+    setSize(width: string, height: string) {
+        this.width = width;
+        this.height = height;
     }
 
     makeFaceDown() {
@@ -45,7 +54,9 @@ export class CardEntity extends AngularEntity {
             type: CardEntity.name,
             suit: this.suit,
             value: this.value,
-            isUp: this.isUp
+            isUp: this.isUp,
+            width: this.width,
+            height: this.height,
         }
     }
 
@@ -53,5 +64,7 @@ export class CardEntity extends AngularEntity {
         this.suit = edata.suit;
         this.value = edata.value;
         this.isUp = edata.isUp;
+        this.width = edata.width;
+        this.height = edata.height;
     }
 }

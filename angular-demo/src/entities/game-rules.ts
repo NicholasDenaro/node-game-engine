@@ -5,6 +5,10 @@ import { CardEntity } from "./card-entity";
 import { CardStackEntity } from "./card-stack-entity";
 
 export interface GameRules {
+    cardColumns: number;
+    cardRows: number;
+    cardStackSize: number;
+    viewOption: string;
     options: {name: string, type: string, value: any, callback: (val: any) => void}[];
     getOption(name: string): any;
     init(engine:EngineStateService, scene: Scene): void;

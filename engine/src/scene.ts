@@ -22,12 +22,12 @@ export class Scene implements CanActivate {
 
     activate() {
         this.isActive = true;
-        document.body.appendChild(this.view.viewElement());
+        //document.body.appendChild(this.view.viewElement());
     }
 
     deactivate() {
         this.isActive = false;
-        document.body.removeChild(this.view.viewElement());
+        //document.body.removeChild(this.view.viewElement());
     }
 
     addController(controller: Controller) {

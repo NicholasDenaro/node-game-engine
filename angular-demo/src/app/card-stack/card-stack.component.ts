@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { CardStackEntity } from 'src/entities/card-stack-entity';
 import { GameView } from 'src/utils/game-view';
 import { EngineStateService } from '../engine-state.service';
@@ -8,18 +8,25 @@ import { EngineStateService } from '../engine-state.service';
   templateUrl: './card-stack.component.html',
   styleUrls: ['./card-stack.component.less']
 })
-export class CardStackComponent extends GameView {
+export class CardStackComponent extends GameView implements OnInit {
   count: number = 0;
+  width: string = '10px';
+  height: string = '10px';
 
   constructor(eref: ElementRef, private engineState: EngineStateService) {
     super(eref);
+  }
+
+  ngOnInit() {
+    this.width = this.entityAs<CardStackEntity>().cardWidth;
+    this.height = this.entityAs<CardStackEntity>().cardHeight;
   }
 
   override ngAfterViewInit(): void {
     super.ngAfterViewInit();
     let i = 0;
     for (let i = 0; i < this.children.length; i++) {
-      (this.children[i] as any).style = `position: absolute; top: ${i * 3.5}vh`;
+      (this.children[i] as any).style = `position: absolute; top: calc(${this.height} * ${i} / 10)`;
     }
   }
 

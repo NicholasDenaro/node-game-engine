@@ -11,6 +11,8 @@ import { EngineStateService } from '../engine-state.service';
 export class CardDeckComponent extends GameView implements OnInit, AfterViewInit {
   count: number = 0;
   revealTop: boolean = false;
+  width: string = '';
+  height: string = '';
 
   constructor(eref: ElementRef, private engineState: EngineStateService) {
     super(eref);
@@ -19,6 +21,8 @@ export class CardDeckComponent extends GameView implements OnInit, AfterViewInit
   ngOnInit(): void {
     this.count = this.entityAs<CardDeckEntity>().count();
     this.revealTop = this.entityAs<CardDeckEntity>().revealTop;
+    this.width = this.entityAs<CardDeckEntity>().cardWidth;
+    this.height = this.entityAs<CardDeckEntity>().cardHeight;
   }
 
   override ngAfterViewInit(): void {

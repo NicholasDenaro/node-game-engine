@@ -8,6 +8,8 @@ import { CardStackComponent } from './card-stack/card-stack.component';
 import { CardDeckComponent } from './card-deck/card-deck.component';
 import { ViewDirective } from './view.directive';
 import { HeaderComponent } from './header/header.component';
+import { KlondikeComponent } from './games/klondike/klondike.component';
+import { SpiderComponent } from './games/spider/spider.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { HeaderComponent } from './header/header.component';
     CardStackComponent,
     CardDeckComponent,
     ViewDirective,
-    HeaderComponent
+    HeaderComponent,
+    KlondikeComponent,
+    SpiderComponent
   ],
   imports: [
     BrowserModule
