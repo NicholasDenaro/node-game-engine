@@ -25,7 +25,7 @@ export class KeyboardController implements Controller {
     tick(): void | Promise<void> {
         const keys = Object.keys(this.keyMap);
         for (let i = 0; i < keys.length; i++) {
-            this.keyMap[keys[i]].tick();
+            this.keyMap[keys[i]]?.tick();
         }
     }
     

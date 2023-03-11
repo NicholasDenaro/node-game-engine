@@ -7,7 +7,11 @@ module.exports = {
     filename: 'bundle.js',
   },
   module: {
-    rules: [{ test: /\.ts?$/, use: 'ts-loader', exclude: /node_modules/}]
+    rules: [
+      { test: /\.ts?$/, use: 'ts-loader', exclude: /node_modules/},
+      { test: /\.js?$/, type: 'javascript/auto'},
+      { test: /\.js?$/, resolve: {fullySpecified: false}}
+    ]
   },
   resolve: {
     extensions: ['.ts', '.js'],

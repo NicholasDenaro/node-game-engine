@@ -7,7 +7,7 @@ class MovingBlock extends Entity {
         super(new Painter2D((ctx: CanvasRenderingContext2D) => this.doPaint(ctx)));
     }
 
-    tick(scene: Scene){
+    tick(scene: Scene): Promise<void>{
         if (scene.isControl('right', ControllerState.Down)) {
             this.x++;
         }
@@ -20,6 +20,8 @@ class MovingBlock extends Entity {
         if (scene.isControl('down', ControllerState.Down)) {
             this.y++;
         }
+
+        return Promise.resolve();
     }
 
     private doPaint(ctx: CanvasRenderingContext2D) {
@@ -44,6 +46,8 @@ async function init(): Promise<void> {
     scene.addEntity(block);
     engine.addScene('main', scene);
     scene.activate();
+
+    document.body.appendChild(view.viewElement());
 
     await engine.start();
     return Promise.resolve();
