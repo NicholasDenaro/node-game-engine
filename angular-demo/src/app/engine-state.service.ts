@@ -58,6 +58,8 @@ export class EngineStateService {
 
     this.engine.start();
     this.engine.doTick();
+    clearInterval(this.auto!);
+    this.auto = null;
     this.autoPlay();
   }
 
