@@ -4,14 +4,17 @@ import { AngularEntity, EntitySaveData } from "src/utils/angular-entity";
 import { AngularPainter } from "src/utils/angular-painter";
 import { ObserverEngine } from "src/utils/observer-engine";
 import { CardEntity } from "./card-entity";
-import { GameRules } from "./game-rules";
 
 export class CardDeckEntity extends AngularEntity {
     
     cardsShown: number = 1;
+    public cardWidth: string = '';
+    public cardHeight: string = '';
 
-    constructor(placement: string, public revealTop: boolean, public canDraw: boolean) {
+    constructor(placement: string, public revealTop: boolean, public canDraw: boolean, size: {width: string, height: string}) {
         super(CardDeckComponent, placement);
+        this.cardWidth = size.width;
+        this.cardHeight = size.height;
     }
 
     count(): number {
@@ -20,6 +23,7 @@ export class CardDeckEntity extends AngularEntity {
 
     addCard(card: CardEntity) {
         super.addEntity(card);
+        card.setSize(this.cardWidth, this.cardHeight);
     }
 
     override addEntity(entity: AngularEntity): void {
@@ -57,7 +61,7 @@ export class CardDeckEntity extends AngularEntity {
 
     override save(): EntitySaveData | any {
         ObserverEngine.constructors[CardDeckEntity.name as any] = (edata) => {
-            const cse =  new CardDeckEntity('', false, false);
+            const cse =  new CardDeckEntity('', false, false, {width: edata.width, height: edata.height});
             cse.load(edata);
             return cse;
         }
@@ -66,7 +70,9 @@ export class CardDeckEntity extends AngularEntity {
             type: CardDeckEntity.name,
             revealTop: this.revealTop,
             canDraw: this.canDraw,
-            cardsShown: this.cardsShown
+            cardsShown: this.cardsShown,
+            width: this.cardWidth,
+            height: this.cardHeight
         }
     }
 

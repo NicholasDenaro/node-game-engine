@@ -1,16 +1,21 @@
 div {
-    width: 20vh;
-    height: 24vh;
     border: solid black 1px;
     background-color: white;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .back {
-    margin: 1vh;
-    border: 7vh dashed rgb(216, 46, 46);
-    width: auto;
-    height: 22vh;
+    background-color: rgb(216, 46, 46);
+    background-image: 
+        linear-gradient(to bottom, white 0%, white 5%, transparent 5%, transparent 100%),
+        linear-gradient(to right, white 0%, white 5%, transparent 5%, transparent 100%),
+        linear-gradient(to top, white 0%, white 5%, transparent 5%, transparent 100%),
+        linear-gradient(to left, white 0%, white 5%, transparent 5%, transparent 100%);
+    width: 100%;
+    height: 100%;
     box-sizing: border-box;
 }
 
@@ -28,18 +33,18 @@ p {
 }
 
 .left {
-    top: 1vh;
-    left: 1vh;
+    top: 2%;
+    left: 5%;
 }
 
 .right {
-    bottom: 1vh;
-    right: 1vh;
+    bottom: 2%;
+    right: 5%;
 }
 
 .large {
     width: 100%;
-    margin-top: 3.5vh !important;
+    text-align: center;
     padding: 0;
     margin: 0;
     vertical-align: middle;

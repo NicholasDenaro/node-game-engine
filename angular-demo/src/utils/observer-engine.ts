@@ -42,8 +42,6 @@ export class ObserverEngine extends Engine {
             const state = this.pastStates.pop()!;
             this.futureStates = [this.currentState, ...this.futureStates];
             this.currentState = state;
-            console.log('loading state');
-            console.log(state);
             Object.keys(state).forEach(key => this.scenes[key].load(state[key]));
 
             this.doTick(false);
@@ -55,7 +53,6 @@ export class ObserverEngine extends Engine {
             const state = this.futureStates.splice(0, 1)[0];
             this.pastStates.push(this.currentState);
             this.currentState = state;
-            console.log(state);
             Object.keys(state).forEach(key => this.scenes[key].load(state[key]));
 
             this.doTick(false);

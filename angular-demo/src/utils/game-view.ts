@@ -25,6 +25,7 @@ export abstract class GameView implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.vcrs.refs = {};
     this.vcrChildren.forEach(vcr => {
       this.vcrs.refs[vcr.view] = vcr.vcr;
     });

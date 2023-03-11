@@ -1,7 +1,5 @@
-<div>
-    <div *ngIf="!revealTop" class="stack">
-    </div>
-    <div *ngIf="revealTop" class="stack">
-        <ng-template view="cards"></ng-template>
-    </div>
+<div *ngIf="!revealTop" class="stack" [style.width]="width" [style.height]="height">
+</div>
+<div *ngIf="revealTop" class="stack" [style.width]="width" [style.height]="height">
+    <ng-template view="cards"></ng-template>
 </div>

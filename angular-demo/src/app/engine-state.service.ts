@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Painter, Painter2D, Scene } from 'game-engine';
+import { Painter, Scene } from 'game-engine';
+import { Subject } from 'rxjs';
 import { CardDeckEntity } from 'src/entities/card-deck-entity';
 import { CardEntity } from 'src/entities/card-entity';
 import { CardStackEntity } from 'src/entities/card-stack-entity';
 import { GameRules } from 'src/entities/game-rules';
 import { SolitaireRules } from 'src/entities/solitaire-state';
-import { AngularEntity } from 'src/utils/angular-entity';
-import { AngularPainter } from 'src/utils/angular-painter';
+import { SpiderRules } from 'src/entities/spider-state';
 import { AngularView } from 'src/utils/angular-view';
+import { sizeCards } from 'src/utils/card-sizer';
 import { ObserverEngine } from 'src/utils/observer-engine';
 
 @Injectable({
@@ -22,15 +23,36 @@ export class EngineStateService {
 
   rules: GameRules | null = null;
 
+  game: string = 'Klondike';
+  private readonly gameSubject = new Subject<string>();
+
   stacks: CardStackEntity[] = [];
 
   constructor() {
   }
 
+  game$() {
+    return this.gameSubject.asObservable();
+  }
+
+  setGame(game: string) {
+    this.game = game;
+    this.gameSubject.next(this.game);
+  }
+
   private view!: AngularView;
   init(view: AngularView) {
     this.view = view;
-    this.rules = new SolitaireRules();
+
+    switch (this.game) {
+      case 'Klondike':
+        this.rules = new SolitaireRules();
+        break;
+      case 'Spider':
+        this.rules = new SpiderRules();
+        break;
+    }
+    
 
     this.reset();
 
@@ -104,7 +126,7 @@ export class EngineStateService {
   pickUpStack(from: CardStackEntity, pickupCount: number) {
     if (!this.isHolding()) {
       if (this.rules?.canPickUpStack(from, pickupCount)) {
-        this.heldStack = new CardStackEntity('cards');
+        this.heldStack = new CardStackEntity('cards', sizeCards(this.rules));
         from.drawCards(pickupCount).forEach(card => {
           this.heldStack?.addCard(card);
         });

@@ -1,19 +1,18 @@
 import { ChangeDetectorRef, NgZone, Type, ViewContainerRef } from "@angular/core";
 import { Entity, View } from "game-engine";
-import { AppComponent } from "src/app/app.component";
 import { AngularEntity } from "./angular-entity";
 import { GameView } from "./game-view";
 
 export class AngularView implements View {
     private vcrs!: {view: GameView, refs: {[key: string]: ViewContainerRef}};
 
-    constructor(private app: AppComponent, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
+    constructor(private app: GameView, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
 
     }
 
     debugInfo(info: any): void {
         this.ngZone.run(() => {
-            this.app.info = info;
+            //this.app.info = info;
         });
     }
 
@@ -24,6 +23,9 @@ export class AngularView implements View {
     draw(entities: Entity[]): Promise<void> {
         return new Promise((resolve, reject) => {
             this.ngZone.run(() => {
+                if (!this.vcrs) {
+                    return;
+                }
                 const keys = Object.keys(this.vcrs.refs);
                 for (let i = 0; i < keys.length; i++) {
                     this.vcrs.refs[keys[i]].clear();

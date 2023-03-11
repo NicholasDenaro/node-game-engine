@@ -1,12 +1,13 @@
 import { Scene } from "game-engine";
 import { EngineStateService } from "src/app/engine-state.service";
+import { sizeCards } from "src/utils/card-sizer";
 import { CardDeckEntity } from "./card-deck-entity";
 import { CardEntity } from "./card-entity";
 import { CardStackEntity } from "./card-stack-entity";
 import { GameRules } from "./game-rules";
 
 export class SolitaireRules implements GameRules {
-
+  viewOption: string = 'Klondike'
   private engine: EngineStateService | null = null;
   private scene: Scene | null = null;
   ruleKeys = {
@@ -14,6 +15,9 @@ export class SolitaireRules implements GameRules {
     kings: 'only kings on empty',
     norules: 'no rules'
   };
+  cardColumns = 7;
+  cardRows = 2;
+  cardStackSize = 20;
 
   options = [
     {
@@ -45,30 +49,30 @@ export class SolitaireRules implements GameRules {
     return this.options.find(option => option.name == name)?.value;
   }
   
-  dealtStack = new CardDeckEntity('dealt', true, false);
-  sort1 = new CardDeckEntity('sort1', true, false);
-  sort2 = new CardDeckEntity('sort2', true, false);
-  sort3 = new CardDeckEntity('sort3', true, false);
-  sort4 = new CardDeckEntity('sort4', true, false);
-  deck = new CardDeckEntity('deck', true, true);
+  dealtStack = new CardDeckEntity('dealt', true, false, sizeCards(this));
+  sort1 = new CardDeckEntity('sort1', true, false, sizeCards(this));
+  sort2 = new CardDeckEntity('sort2', true, false, sizeCards(this));
+  sort3 = new CardDeckEntity('sort3', true, false, sizeCards(this));
+  sort4 = new CardDeckEntity('sort4', true, false, sizeCards(this));
+  deck = new CardDeckEntity('deck', true, true, sizeCards(this));
 
   stacks: CardStackEntity[] = [];
 
   init(engine: EngineStateService, scene: Scene) {
     this.engine = engine;
     this.scene = scene;
-    scene.addEntity(this.deck = new CardDeckEntity('deck', true, true));
-    scene.addEntity(this.dealtStack = new CardDeckEntity('dealt', true, false));
+    scene.addEntity(this.deck = new CardDeckEntity('deck', true, true, sizeCards(this)));
+    scene.addEntity(this.dealtStack = new CardDeckEntity('dealt', true, false, sizeCards(this)));
     this.dealtStack.cardsShown = this.getOption('deal 3') ? 3 : 1;
-    scene.addEntity(this.sort1 = new CardDeckEntity('sort1', true, false));
-    scene.addEntity(this.sort2 = new CardDeckEntity('sort2', true, false));
-    scene.addEntity(this.sort3 = new CardDeckEntity('sort3', true, false));
-    scene.addEntity(this.sort4 = new CardDeckEntity('sort4', true, false));
+    scene.addEntity(this.sort1 = new CardDeckEntity('sort1', true, false, sizeCards(this)));
+    scene.addEntity(this.sort2 = new CardDeckEntity('sort2', true, false, sizeCards(this)));
+    scene.addEntity(this.sort3 = new CardDeckEntity('sort3', true, false, sizeCards(this)));
+    scene.addEntity(this.sort4 = new CardDeckEntity('sort4', true, false, sizeCards(this)));
 
     this.stacks = [];
 
     for (let i = 0 ; i < 7; i++) {
-      let stack = new CardStackEntity(`stack${i + 1}`);
+      let stack = new CardStackEntity(`stack${i + 1}`, sizeCards(this));
       this.stacks.push(stack);
       scene.addEntity(stack);
     }

@@ -16,6 +16,9 @@ export class CardComponent extends GameView implements OnInit  {
   @HostBinding()
   style: string = '';
 
+  width: string = '10px';
+  height: string = '10px';
+
   constructor(private eref: ElementRef, private engineState: EngineStateService) {
     super(eref);
   }
@@ -29,6 +32,8 @@ export class CardComponent extends GameView implements OnInit  {
     this.suit = this.entityAs<CardEntity>().suit;
     this.value = this.entityAs<CardEntity>().value;
     this.isUp = this.entityAs<CardEntity>().isUp;
+    this.width = this.entityAs<CardEntity>().width;
+    this.height = this.entityAs<CardEntity>().height;
     switch (this.entityAs<CardEntity>().value) {
       case '1':
         this.value = 'A';

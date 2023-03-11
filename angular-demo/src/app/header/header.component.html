@@ -8,9 +8,13 @@
     <div class="menu" #menu>
         <ng-container *ngFor="let option of options">
             <div class="option">
-                <p>{{option.name}}</p>
-                <ng-container *ngIf="option.type == 'toggle'"></ng-container>
-                <input [type]="'checkbox'" [checked]="option.value" (change)="option.callback($event)"/>
+                <p class="option-text">{{option.name}}</p>
+                <ng-container *ngIf="option.type == 'toggle'">
+                    <input [type]="'checkbox'" [checked]="option.value" (change)="option.callback($event)"/>
+                </ng-container>
+                <ng-container *ngIf="option.type == 'button'">
+                    <button [type]="'checkbox'" (click)="option.callback($event)" [value]="option.name">{{option.value}}</button>
+                </ng-container>
             </div>
         </ng-container>
     </div>
