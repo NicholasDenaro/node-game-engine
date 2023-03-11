@@ -1,7 +1,7 @@
 <div *ngIf="isUp" [style.width]="width" [style.height]="height">
-    <p [class]="suitColor+' left'">{{suit}}{{value}}</p>
-    <p [class]="suitColor+ ' large'">{{suit}}</p>
-    <p [class]="suitColor+' right'">{{value}}{{suit}}</p>
+    <p [class]="suitColor+' left'" style.font-size="calc({{height}} / 10)">{{suit}}{{value}}</p>
+    <p [class]="suitColor+ ' large'" style.font-size="calc({{height}} / 2)">{{suit}}</p>
+    <p [class]="suitColor+' right'" style.font-size="calc({{height}} / 10)">{{value}}{{suit}}</p>
 </div>
 <div *ngIf="!isUp" [style.width]="width" [style.height]="height">
     <div class="back"></div>

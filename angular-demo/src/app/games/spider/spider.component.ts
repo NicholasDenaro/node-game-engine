@@ -20,7 +20,7 @@ export class SpiderComponent extends GameView implements OnInit {
     const rules = new SpiderRules();
     const size = sizeCards(rules);
     this.rows = `calc(${size.height} / 2 + 10px) 1fr`;
-    this.columns = `repeat(${rules.cardColumns}, calc(${size.width} + 10px)) 1fr`;
+    this.columns = `repeat(${rules.cardColumns * 2}, calc(${size.width} / 2 + 5px)) 1fr`;
   }
 
   @HostListener('mousemove', ['$event'])

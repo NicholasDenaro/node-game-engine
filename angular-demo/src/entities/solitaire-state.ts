@@ -25,7 +25,7 @@ export class SolitaireRules implements GameRules {
       type: 'toggle',
       value: true,
       callback: async (val: any) => {
-        this.options!.find(opt => opt.name == 'deal 3')!.value = val.srcElement.checked;
+        this.setOption('deal 3', val.srcElement.checked);
         this.dealtStack.cardsShown = this.getOption('deal 3') ? 3 : 1;
         await this.dealtStack.tick(this.scene!);
         this.engine?.engine.draw();
@@ -47,6 +47,10 @@ export class SolitaireRules implements GameRules {
 
   getOption(name: string) {
     return this.options.find(option => option.name == name)?.value;
+  }
+
+  private setOption(name: string, val: any) {
+    this.options!.find(opt => opt.name == name)!.value = val;
   }
   
   dealtStack = new CardDeckEntity('dealt', true, false, sizeCards(this));
