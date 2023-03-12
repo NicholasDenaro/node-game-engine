@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, NgZone, OnInit } from '@angular/core';
+import { EngineStateService } from 'src/app/engine-state.service';
 import { SpiderRules } from 'src/entities/spider-state';
 import { sizeCards } from 'src/utils/card-sizer';
 import { GameView } from 'src/utils/game-view';
@@ -16,7 +17,18 @@ export class SpiderComponent extends GameView implements OnInit {
   rows: string = '1fr';
   columns: string = '1fr';
 
+  constructor(eref: ElementRef, engineState: EngineStateService) {
+    super(eref);
+    engineState.reset$().subscribe(() => {
+      this.resize();
+    })
+  }
+
   ngOnInit() {
+    this.resize();
+  }
+
+  resize() {
     const rules = new SpiderRules();
     const size = sizeCards(rules);
     this.rows = `calc(${size.height} / 2 + 10px) 1fr`;

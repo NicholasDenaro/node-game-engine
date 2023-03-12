@@ -4,56 +4,60 @@ import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 import { CardEntity } from "./card-entity";
 
 export class CardStackEntity extends AngularEntity {
-    public cardWidth: string = '';
-    public cardHeight: string = '';
-    constructor(placement: string, size: {width: string, height: string}) {
-        super(CardStackComponent, placement);
-        this.cardWidth = size.width;
-        this.cardHeight = size.height;
-    }
+  public cardWidth: string = '';
+  public cardHeight: string = '';
+  constructor(placement: string) {
+    super(CardStackComponent, placement);
+  }
 
-    count(): number {
-        return this.entities.length;
-    }
+  setSize(size: { width: string, height: string }) {
+    this.cardWidth = size.width;
+    this.cardHeight = size.height;
+    this.entities.forEach(entity => (entity as any).setSize ? (entity as any).setSize(size) : '');
+  }
 
-    addCard(card: CardEntity) {
-        super.addEntity(card);
-        card.setSize(this.cardWidth, this.cardHeight);
-    }
+  count(): number {
+    return this.entities.length;
+  }
 
-    override addEntity(entity: AngularEntity): void {
-        if (entity instanceof CardEntity) {
-            this.addCard(entity);
-        }
-    }
+  addCard(card: CardEntity) {
+    super.addEntity(card);
+    card.setSize({ width: this.cardWidth, height: this.cardHeight });
+  }
 
-    drawCards(amount: number): CardEntity[] {
-        return this.entities.splice(this.entities.length - amount) as CardEntity[];
+  override addEntity(entity: AngularEntity): void {
+    if (entity instanceof CardEntity) {
+      this.addCard(entity);
     }
+  }
 
-    peekCard(): CardEntity {
-        return this.entities[this.entities.length - 1] as CardEntity;
-    }
+  drawCards(amount: number): CardEntity[] {
+    return this.entities.splice(this.entities.length - amount) as CardEntity[];
+  }
 
-    cards(): CardEntity[] {
-        return this.entities as CardEntity[];
-    }
+  peekCard(): CardEntity {
+    return this.entities[this.entities.length - 1] as CardEntity;
+  }
 
-    hasCards() {
-        return this.entities.length > 0;
-    }
+  cards(): CardEntity[] {
+    return this.entities as CardEntity[];
+  }
 
-    override save(): EntitySaveData | any {
-        ObserverEngine.constructors[CardStackEntity.name as any] = (edata) => {
-            const cse =  new CardStackEntity('', {width: edata.cardWidth, height: edata.cardHeight});
-            cse.load(edata);
-            return cse;
-        }
-        return {
-            ...super.save(),
-            type: CardStackEntity.name,
-            cardWidth: this.cardWidth,
-            cardHeight: this.cardHeight,
-        }
+  hasCards() {
+    return this.entities.length > 0;
+  }
+
+  override save(): EntitySaveData | any {
+    ObserverEngine.constructors[CardStackEntity.name as any] = (edata) => {
+      const cse = new CardStackEntity('');
+      cse.load(edata);
+      return cse;
     }
+    return {
+      ...super.save(),
+      type: CardStackEntity.name,
+      cardWidth: this.cardWidth,
+      cardHeight: this.cardHeight,
+    }
+  }
 }
