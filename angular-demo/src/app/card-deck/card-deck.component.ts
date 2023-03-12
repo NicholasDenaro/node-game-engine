@@ -28,7 +28,7 @@ export class CardDeckComponent extends GameView implements OnInit, AfterViewInit
   override ngAfterViewInit(): void {
     super.ngAfterViewInit();
     for (let i = 0; i < this.children.length; i++) {
-      (this.children[i] as any).style = `position: absolute; top: 0; left: ${i * 6.5}vh`;
+      (this.children[i] as any).style = `position: absolute; top: 0; left: ${i * 20}%`;
     }
   }
 

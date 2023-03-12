@@ -35,13 +35,13 @@ export class SolitaireRules implements GameRules {
       name: 'only kings on empty',
       type: 'toggle',
       value: true,
-      callback: (val: any) => {this.options!.find(opt => opt.name == 'only kings on empty')!.value = val.srcElement.checked}
+      callback: (val: any) => { this.options!.find(opt => opt.name == 'only kings on empty')!.value = val.srcElement.checked }
     },
     {
       name: 'no rules',
       type: 'toggle',
       value: false,
-      callback: (val: any) => {this.options!.find(opt => opt.name == 'no rules')!.value = val.srcElement.checked}
+      callback: (val: any) => { this.options!.find(opt => opt.name == 'no rules')!.value = val.srcElement.checked }
     }
   ];
 
@@ -52,31 +52,38 @@ export class SolitaireRules implements GameRules {
   private setOption(name: string, val: any) {
     this.options!.find(opt => opt.name == name)!.value = val;
   }
-  
-  dealtStack = new CardDeckEntity('dealt', true, false, sizeCards(this));
-  sort1 = new CardDeckEntity('sort1', true, false, sizeCards(this));
-  sort2 = new CardDeckEntity('sort2', true, false, sizeCards(this));
-  sort3 = new CardDeckEntity('sort3', true, false, sizeCards(this));
-  sort4 = new CardDeckEntity('sort4', true, false, sizeCards(this));
-  deck = new CardDeckEntity('deck', true, true, sizeCards(this));
+
+  dealtStack = new CardDeckEntity('dealt', true, false);
+  sort1 = new CardDeckEntity('sort1', true, false);
+  sort2 = new CardDeckEntity('sort2', true, false);
+  sort3 = new CardDeckEntity('sort3', true, false);
+  sort4 = new CardDeckEntity('sort4', true, false);
+  deck = new CardDeckEntity('deck', true, true);
 
   stacks: CardStackEntity[] = [];
 
   init(engine: EngineStateService, scene: Scene) {
     this.engine = engine;
     this.scene = scene;
-    scene.addEntity(this.deck = new CardDeckEntity('deck', true, true, sizeCards(this)));
-    scene.addEntity(this.dealtStack = new CardDeckEntity('dealt', true, false, sizeCards(this)));
+    scene.addEntity(this.deck = new CardDeckEntity('deck', true, true));
+    this.deck.setSize(sizeCards(this));
+    scene.addEntity(this.dealtStack = new CardDeckEntity('dealt', true, false));
+    this.dealtStack.setSize(sizeCards(this));
     this.dealtStack.cardsShown = this.getOption('deal 3') ? 3 : 1;
-    scene.addEntity(this.sort1 = new CardDeckEntity('sort1', true, false, sizeCards(this)));
-    scene.addEntity(this.sort2 = new CardDeckEntity('sort2', true, false, sizeCards(this)));
-    scene.addEntity(this.sort3 = new CardDeckEntity('sort3', true, false, sizeCards(this)));
-    scene.addEntity(this.sort4 = new CardDeckEntity('sort4', true, false, sizeCards(this)));
+    scene.addEntity(this.sort1 = new CardDeckEntity('sort1', true, false));
+    this.sort1.setSize(sizeCards(this));
+    scene.addEntity(this.sort2 = new CardDeckEntity('sort2', true, false));
+    this.sort2.setSize(sizeCards(this));
+    scene.addEntity(this.sort3 = new CardDeckEntity('sort3', true, false));
+    this.sort3.setSize(sizeCards(this));
+    scene.addEntity(this.sort4 = new CardDeckEntity('sort4', true, false));
+    this.sort4.setSize(sizeCards(this));
 
     this.stacks = [];
 
-    for (let i = 0 ; i < 7; i++) {
-      let stack = new CardStackEntity(`stack${i + 1}`, sizeCards(this));
+    for (let i = 0; i < 7; i++) {
+      let stack = new CardStackEntity(`stack${i + 1}`);
+      stack.setSize(sizeCards(this));
       this.stacks.push(stack);
       scene.addEntity(stack);
     }
@@ -95,7 +102,7 @@ export class SolitaireRules implements GameRules {
     }
     this.deck.shuffle();
 
-    for (let i = 0 ; i < 7; i++) {
+    for (let i = 0; i < 7; i++) {
       for (let j = 0; j < i; j++) {
         let card = this.deck.drawCard();
         if (card) {
@@ -113,21 +120,28 @@ export class SolitaireRules implements GameRules {
 
   rebind(scene: Scene) {
     this.deck = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'deck') as CardDeckEntity;
+    this.deck.setSize(sizeCards(this));
     this.dealtStack = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'dealt') as CardDeckEntity;
+    this.dealtStack.setSize(sizeCards(this));
     this.dealtStack.cardsShown = this.getOption('deal 3') ? 3 : 1;
     this.sort1 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort1') as CardDeckEntity;
+    this.sort1.setSize(sizeCards(this));
     this.sort2 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort2') as CardDeckEntity;
+    this.sort2.setSize(sizeCards(this));
     this.sort3 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort3') as CardDeckEntity;
+    this.sort3.setSize(sizeCards(this));
     this.sort4 = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'sort4') as CardDeckEntity;
+    this.sort4.setSize(sizeCards(this));
     this.stacks = [];
 
     const indexFinder = /stack(?<index>[0-9]+)/;
     scene.entitiesSlice()
-    .filter(entity => entity instanceof CardStackEntity && entity.key.indexOf('stack') > -1)
-    .map(stack => stack as CardStackEntity)
-    .forEach(stack => {
-      this.stacks[Number.parseInt(indexFinder.exec(stack.key)?.groups?.['index'] as string) - 1] = stack;
-    });
+      .filter(entity => entity instanceof CardStackEntity && entity.key.indexOf('stack') > -1)
+      .map(stack => stack as CardStackEntity)
+      .forEach(stack => {
+        this.stacks[Number.parseInt(indexFinder.exec(stack.key)?.groups?.['index'] as string) - 1] = stack;
+        stack.setSize(sizeCards(this));
+      });
   }
 
   deal(deck: CardDeckEntity) {
@@ -189,33 +203,33 @@ export class SolitaireRules implements GameRules {
     if (dropTo == cardLastFrom) {
       return true;
     }
-  
+
     let toCheck = held instanceof CardEntity ? held : ((held as CardStackEntity)?.getEntities()[0] as CardEntity);
 
     if (dropTo == this.sort1 || dropTo == this.sort2 || dropTo == this.sort3 || dropTo == this.sort4) {
-        if (dropTo.count() == 0 && Number.parseInt(toCheck.value) == 1) {
-          return true;
-        }
-    
-        const cardTo = dropTo.peekCard();
-        return cardTo && cardTo.isUp && (Number.parseInt(cardTo.value) == Number.parseInt(toCheck.value) - 1) && toCheck.suit == cardTo.suit;
+      if (dropTo.count() == 0 && Number.parseInt(toCheck.value) == 1) {
+        return true;
+      }
+
+      const cardTo = dropTo.peekCard();
+      return cardTo && cardTo.isUp && (Number.parseInt(cardTo.value) == Number.parseInt(toCheck.value) - 1) && toCheck.suit == cardTo.suit;
     }
     else {
-        if (dropTo.count() == 0 && Number.parseInt(toCheck.value) == 13) {
-          return true;
-        }
+      if (dropTo.count() == 0 && Number.parseInt(toCheck.value) == 13) {
+        return true;
+      }
 
-        if (dropTo.count() == 0 && !this.getOption(this.ruleKeys.kings)) {
-          return true;
-        }
-    
-        const cardTo = dropTo.peekCard();
-        return cardTo && cardTo.isUp && (Number.parseInt(cardTo.value) == Number.parseInt(toCheck.value) + 1) && toCheck.isOppositeSuit(cardTo) && dropTo != this.dealtStack;
+      if (dropTo.count() == 0 && !this.getOption(this.ruleKeys.kings)) {
+        return true;
+      }
+
+      const cardTo = dropTo.peekCard();
+      return cardTo && cardTo.isUp && (Number.parseInt(cardTo.value) == Number.parseInt(toCheck.value) + 1) && toCheck.isOppositeSuit(cardTo) && dropTo != this.dealtStack;
     }
   }
 
   autoPlay(held: any): boolean {
-    if(held) {
+    if (held) {
       return false;
     }
 
@@ -242,9 +256,9 @@ export class SolitaireRules implements GameRules {
         }
       }
     }
-    
 
-    for (let i = 0 ; i< this.stacks.length; i++) {
+
+    for (let i = 0; i < this.stacks.length; i++) {
       const stack = this.stacks[i];
       const cards = stack.cards();
       const card = cards[cards.length - 1];

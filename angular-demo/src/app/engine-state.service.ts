@@ -25,6 +25,8 @@ export class EngineStateService {
 
   game: string = 'Klondike';
   private readonly gameSubject = new Subject<string>();
+  private readonly resetSubject = new Subject<any>();
+  private readonly resizeSubject = new Subject<any>();
 
   stacks: CardStackEntity[] = [];
 
@@ -33,6 +35,14 @@ export class EngineStateService {
 
   game$() {
     return this.gameSubject.asObservable();
+  }
+
+  reset$() {
+    return this.resetSubject.asObservable();
+  }
+
+  resize$() {
+    return this.resizeSubject.asObservable();
   }
 
   setGame(game: string) {
@@ -85,14 +95,19 @@ export class EngineStateService {
   undo() {
     this.engine.undo();
     this.rules?.rebind(this.scene);
+    this.resizeSubject.next({});
+    this.engine.draw();
   }
 
   redo() {
     this.engine.redo();
     this.rules?.rebind(this.scene);
+    this.resizeSubject.next({});
+    this.engine.draw();
   }
 
   reset() {
+    this.resetSubject.next({});
     this.scene?.deactivate();
     this.scene = new Scene(this.view);
 
@@ -128,7 +143,8 @@ export class EngineStateService {
   pickUpStack(from: CardStackEntity, pickupCount: number) {
     if (!this.isHolding()) {
       if (this.rules?.canPickUpStack(from, pickupCount)) {
-        this.heldStack = new CardStackEntity('cards', sizeCards(this.rules));
+        this.heldStack = new CardStackEntity('cards');
+        this.heldStack.setSize(sizeCards(this.rules));
         from.drawCards(pickupCount).forEach(card => {
           this.heldStack?.addCard(card);
         });

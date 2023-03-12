@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { EngineStateService } from 'src/app/engine-state.service';
 import { SolitaireRules } from 'src/entities/solitaire-state';
 import { sizeCards } from 'src/utils/card-sizer';
 import { GameView } from 'src/utils/game-view';
@@ -15,7 +16,21 @@ export class KlondikeComponent extends GameView implements OnInit {
   rows: string = '1fr';
   columns: string = '1fr';
 
+  constructor(eref: ElementRef, engineState: EngineStateService) {
+    super(eref);
+    engineState.reset$().subscribe(() => {
+      this.resize();
+    })
+    engineState.resize$().subscribe(() => {
+      this.resize();
+    })
+  }
+
   ngOnInit() {
+    this.resize();
+  }
+
+  resize() {
     const rules = new SolitaireRules();
     const size = sizeCards(rules);
     this.rows = `calc(${size.height} + 10px) 1fr`;
