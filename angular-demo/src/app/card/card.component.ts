@@ -8,7 +8,7 @@ import { EngineStateService } from '../engine-state.service';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.less']
 })
-export class CardComponent extends GameView implements OnInit  {
+export class CardComponent extends GameView implements OnInit {
   suit: string = '';
   value: string = '';
   suitColor: string = 'black';
@@ -48,7 +48,7 @@ export class CardComponent extends GameView implements OnInit  {
         this.value = 'K';
         break;
     }
-    switch(this.entityAs<CardEntity>().suit) {
+    switch (this.entityAs<CardEntity>().suit) {
       case '♥':
       case '♦':
         this.suitColor = 'red';
