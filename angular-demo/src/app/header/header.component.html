@@ -1,24 +1,24 @@
 <div class="header">
-    <div class="button">Games</div>
-    <div class="button">Options</div>
-    <div class="button" #auto>Auto:On</div>
-    <div class="button">Undo</div>
-    <div class="button">Redo</div>
-    <div class="button right">Reset</div>
-    <div class="menu" #menu>
-        <ng-container *ngFor="let option of options">
-            <div class="option">
-                <p class="option-text">{{option.name}}</p>
-                <ng-container *ngIf="option.type == 'toggle'">
-                    <input [type]="'checkbox'" [checked]="option.value" (change)="option.callback($event)"/>
-                </ng-container>
-                <ng-container *ngIf="option.type == 'radio'">
-                    <input [type]="'radio'" [checked]="option.value" (change)="option.callback($event)"/>
-                </ng-container>
-                <ng-container *ngIf="option.type == 'button'">
-                    <button [type]="'checkbox'" (click)="option.callback($event)" [value]="option.name">{{option.value}}</button>
-                </ng-container>
-            </div>
+  <div class="button">Games</div>
+  <div class="button">Options</div>
+  <div class="button" #auto>Auto:On</div>
+  <div class="button">Undo</div>
+  <div class="button">Redo</div>
+  <div class="button right">Reset</div>
+  <div class="menu" #menu>
+    <ng-container *ngFor="let option of options">
+      <div class="option">
+        <p class="option-text">{{option.name}}</p>
+        <ng-container *ngIf="option.type == 'toggle'">
+          <input [type]="'checkbox'" [checked]="option.value" (change)="option.callback($event)" />
         </ng-container>
-    </div>
+        <ng-container *ngIf="option.type == 'radio'">
+          <input [type]="'radio'" [checked]="option.value" (change)="option.callback($event)" />
+        </ng-container>
+        <ng-container *ngIf="option.type == 'button'">
+          <button [type]="'checkbox'" (click)="option.callback($event)" [value]="option.name">{{option.value}}</button>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
 </div>

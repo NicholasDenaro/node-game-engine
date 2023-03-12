@@ -2,11 +2,10 @@
 <p>{{info}}
 </p>
 <div class="game">
-    <ng-container *ngIf="game == 'Klondike'">
-        <app-klondike #gameView></app-klondike>
-    </ng-container>
-    <ng-container *ngIf="game == 'Spider'">
-        <app-spider #gameView></app-spider>
-    </ng-container>
+  <ng-container *ngIf="game == 'Klondike'">
+    <app-klondike #gameView></app-klondike>
+  </ng-container>
+  <ng-container *ngIf="game == 'Spider'">
+    <app-spider #gameView></app-spider>
+  </ng-container>
 </div>
-  

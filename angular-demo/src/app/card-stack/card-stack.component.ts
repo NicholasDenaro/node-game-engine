@@ -41,7 +41,7 @@ export class CardStackComponent extends GameView implements OnInit {
         srcCard = srcCard.parentElement!;
       }
       const index = this.children.findIndex(child => child.nativeElement == srcCard);
-      this.engineState.pickUpStack(this.entityAs<CardStackEntity>(),this.entityAs<CardStackEntity>().count() - index);
+      this.engineState.pickUpStack(this.entityAs<CardStackEntity>(), this.entityAs<CardStackEntity>().count() - index);
     }
   }
 }

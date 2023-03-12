@@ -11,9 +11,9 @@ export class HeaderComponent {
   @ViewChild('auto')
   auto!: ElementRef;
 
-  options: {name: string, type: string, value: any, callback: (val: any) => void}[] = [];
+  options: { name: string, type: string, value: any, callback: (val: any) => void }[] = [];
 
-  gameOptions: {name: string, type: string, value: any, callback: (val: any) => void}[] = [
+  gameOptions: { name: string, type: string, value: any, callback: (val: any) => void }[] = [
     {
       name: 'Klondike',
       type: 'button',
