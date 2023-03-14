@@ -1,6 +1,6 @@
-import { GameRules } from "src/entities/game-rules";
+import { CardGameRules } from "src/entities/rules/game-rules";
 
-export function sizeCards(rules: GameRules): { width: string, height: string } {
+export function sizeCards(rules: CardGameRules): { width: string, height: string } {
   let horizontalCards = rules.cardColumns;
   let verticalCards = rules.cardRows;
   let stackLength = rules.cardStackSize;

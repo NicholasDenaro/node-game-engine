@@ -40,6 +40,16 @@ export class HeaderComponent {
         this.openMenu = '';
       },
     },
+    {
+      name: 'Lobby',
+      type: 'button',
+      value: 'Play',
+      callback: async (val) => {
+        this.engineState.setGame(val.srcElement?.value as string || '');
+        this.options = [];
+        this.openMenu = '';
+      },
+    },
   ];
 
   openMenu = '';

@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, NgZone, OnInit } from '@angular/core';
 import { EngineStateService } from 'src/app/engine-state.service';
-import { SpiderRules } from 'src/entities/spider-state';
+import { SpiderRules } from 'src/entities/rules/spider-state';
 import { sizeCards } from 'src/utils/card-sizer';
 import { GameView } from 'src/utils/game-view';
 

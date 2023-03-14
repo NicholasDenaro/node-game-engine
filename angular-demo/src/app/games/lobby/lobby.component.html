@@ -1,0 +1,41 @@
+<ng-container *ngIf="!isConnected">
+  <h1 *ngIf="isLobby">In the Lobby</h1>
+  <button (click)="host()" *ngIf="isLobby">Host</button>
+  <br>
+  <button (click)="join()" *ngIf="isLobby">Join</button>
+
+  <ng-container *ngIf="!isLobby && isHosting">
+    <pre>{{code}}</pre>
+    <br>
+    <button (click)="copy()">Copy Code</button>
+    <p>Send the code to the player who wishes to enter the lobby, and then enter their answer below to connect</p>
+    <br>
+    <label>Enter Answer: </label>
+    <br>
+    <textarea #textarea></textarea>
+    <br>
+    <button (click)="connect()">Connect</button>
+  </ng-container>
+
+  <ng-container *ngIf="!isLobby && !isHosting">
+    <label>Enter Code: </label>
+    <br>
+    <textarea #textarea></textarea>
+    <br>
+    <button (click)="answer()">Answer</button>
+    <br>
+    <pre>{{code}}</pre>
+    <br>
+    <button (click)="copy()">Copy Answer</button>
+  </ng-container>
+
+  <br>
+  <button (click)="back()" *ngIf="!isLobby">Back</button>
+  
+</ng-container>
+
+<ng-container *ngIf="isConnected">
+  <textarea disabled #chatBox></textarea>
+  <br>
+  <input #messageBox type="text" value="" (keyup.enter)="sendChat()" />
+</ng-container>

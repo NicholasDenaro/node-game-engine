@@ -15,6 +15,8 @@ export class ObserverEngine extends Engine {
 
   resetStates() {
     this.pastStates = [];
+    this.currentState = {};
+    this.futureStates = [];
   }
 
   async doTick(saveState: boolean = true): Promise<void> {
@@ -33,7 +35,7 @@ export class ObserverEngine extends Engine {
       });
       this.pastStates.push(this.currentState);
       this.currentState = state;
-      console.log(JSON.stringify(state));
+      //console.log(JSON.stringify(state));
       this.futureStates = [];
     }
   }

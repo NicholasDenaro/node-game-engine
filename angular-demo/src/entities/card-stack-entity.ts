@@ -2,8 +2,9 @@ import { CardStackComponent } from "src/app/card-stack/card-stack.component";
 import { ObserverEngine } from "src/utils/observer-engine";
 import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 import { CardEntity } from "./card-entity";
+import { Holdable } from "./holdable";
 
-export class CardStackEntity extends AngularEntity {
+export class CardStackEntity extends AngularEntity implements Holdable {
   public cardWidth: string = '';
   public cardHeight: string = '';
   constructor(placement: string) {
