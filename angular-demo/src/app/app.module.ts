@@ -10,6 +10,7 @@ import { ViewDirective } from './view.directive';
 import { HeaderComponent } from './header/header.component';
 import { KlondikeComponent } from './games/klondike/klondike.component';
 import { SpiderComponent } from './games/spider/spider.component';
+import { LobbyComponent } from './games/lobby/lobby.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SpiderComponent } from './games/spider/spider.component';
     ViewDirective,
     HeaderComponent,
     KlondikeComponent,
-    SpiderComponent
+    SpiderComponent,
+    LobbyComponent
   ],
   imports: [
     BrowserModule

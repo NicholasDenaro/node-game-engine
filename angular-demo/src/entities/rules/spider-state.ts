@@ -1,12 +1,12 @@
 import { Scene } from "game-engine";
 import { EngineStateService } from "src/app/engine-state.service";
 import { sizeCards } from "src/utils/card-sizer";
-import { CardDeckEntity } from "./card-deck-entity";
-import { CardEntity } from "./card-entity";
-import { CardStackEntity } from "./card-stack-entity";
-import { GameRules } from "./game-rules";
+import { CardDeckEntity } from "../card-deck-entity";
+import { CardEntity } from "../card-entity";
+import { CardStackEntity } from "../card-stack-entity";
+import { CardGameRules } from "./game-rules";
 
-export class SpiderRules implements GameRules {
+export class SpiderRules implements CardGameRules {
   viewOption: string = 'Spider';
 
   ruleKeys = {
@@ -227,7 +227,12 @@ export class SpiderRules implements GameRules {
   }
 
   rebind(scene: Scene): void {
+    const cardSize = sizeCards(this);
+    cardSize.width = `calc(${cardSize.width} / 2)`;
+    cardSize.height = `calc(${cardSize.height} / 2)`;
+
     this.deck = scene.entitiesSlice().find(entity => entity instanceof CardDeckEntity && entity.key == 'deck') as CardDeckEntity;
+    this.deck.setSize(cardSize);
     this.stacks = [];
 
     const indexFinderStack = /stack(?<index>[0-9]+)/;
@@ -236,6 +241,7 @@ export class SpiderRules implements GameRules {
       .map(stack => stack as CardStackEntity)
       .forEach(stack => {
         this.stacks[Number.parseInt(indexFinderStack.exec(stack.key)?.groups?.['index'] as string) - 1] = stack;
+        stack.setSize(sizeCards(this));
       });
 
     const indexFinderSort = /sort(?<index>[0-9]+)/;
@@ -244,6 +250,7 @@ export class SpiderRules implements GameRules {
       .map(sort => sort as CardDeckEntity)
       .forEach(sort => {
         this.sorts[Number.parseInt(indexFinderSort.exec(sort.key)?.groups?.['index'] as string) - 1] = sort;
+        sort.setSize(cardSize);
       });
   }
 

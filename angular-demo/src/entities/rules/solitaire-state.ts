@@ -1,12 +1,12 @@
 import { Scene } from "game-engine";
 import { EngineStateService } from "src/app/engine-state.service";
 import { sizeCards } from "src/utils/card-sizer";
-import { CardDeckEntity } from "./card-deck-entity";
-import { CardEntity } from "./card-entity";
-import { CardStackEntity } from "./card-stack-entity";
-import { GameRules } from "./game-rules";
+import { CardDeckEntity } from "../card-deck-entity";
+import { CardEntity } from "../card-entity";
+import { CardStackEntity } from "../card-stack-entity";
+import { CardGameRules } from "./game-rules";
 
-export class SolitaireRules implements GameRules {
+export class SolitaireRules implements CardGameRules {
   viewOption: string = 'Klondike'
   private engine: EngineStateService | null = null;
   private scene: Scene | null = null;

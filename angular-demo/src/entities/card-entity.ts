@@ -2,8 +2,9 @@ import { Scene } from "game-engine";
 import { CardComponent } from "src/app/card/card.component";
 import { ObserverEngine } from "src/utils/observer-engine";
 import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
+import { Holdable } from "./holdable";
 
-export class CardEntity extends AngularEntity {
+export class CardEntity extends AngularEntity implements Holdable {
 
   width: string = '10px';
   height: string = '14px';

@@ -4,9 +4,11 @@ import { Subject } from 'rxjs';
 import { CardDeckEntity } from 'src/entities/card-deck-entity';
 import { CardEntity } from 'src/entities/card-entity';
 import { CardStackEntity } from 'src/entities/card-stack-entity';
-import { GameRules } from 'src/entities/game-rules';
-import { SolitaireRules } from 'src/entities/solitaire-state';
-import { SpiderRules } from 'src/entities/spider-state';
+import { Holdable, Holder } from 'src/entities/holdable';
+import { CardGameRules, GameRules } from 'src/entities/rules/game-rules';
+import { SolitaireRules } from 'src/entities/rules/solitaire-state';
+import { SpiderRules } from 'src/entities/rules/spider-state';
+import { AngularEntity } from 'src/utils/angular-entity';
 import { AngularView } from 'src/utils/angular-view';
 import { sizeCards } from 'src/utils/card-sizer';
 import { ObserverEngine } from 'src/utils/observer-engine';
@@ -17,11 +19,10 @@ import { ObserverEngine } from 'src/utils/observer-engine';
 export class EngineStateService {
   engine: ObserverEngine = new ObserverEngine();
   scene!: Scene;
-  heldCard: CardEntity | null = null;
-  heldStack: CardStackEntity | null = null;
+  heldEntity: (AngularEntity & Holdable) | null = null;
   cardLastFrom!: CardStackEntity | CardDeckEntity;
 
-  rules: GameRules | null = null;
+  rules: GameRules | CardGameRules | null = null;
 
   game: string = 'Klondike';
   private readonly gameSubject = new Subject<string>();
@@ -66,6 +67,7 @@ export class EngineStateService {
 
     this.reset();
 
+    this.engine.resetStates();
     this.engine.start();
     this.engine.doTick();
     clearInterval(this.auto!);
@@ -82,7 +84,7 @@ export class EngineStateService {
     }
 
     this.auto = setInterval(() => {
-        if (this.rules?.autoPlay(this.heldCard || this.heldStack)) {
+        if (this.rules?.autoPlay(this.heldEntity)) {
           this.engine.doTick();
         }
     }, 100);
@@ -119,12 +121,12 @@ export class EngineStateService {
   }
 
   deal(deck: CardDeckEntity) {
-    this.rules?.deal(deck);
+    (this.rules as CardGameRules)?.deal(deck);
     this.engine.doTick();
   }
 
   cycleDeck(deck: CardDeckEntity) {
-    this.rules?.cycleDeck(deck);
+    (this.rules as CardGameRules)?.cycleDeck(deck);
     this.engine.doTick();
   }
 
@@ -132,7 +134,7 @@ export class EngineStateService {
     if (!this.isHolding()) {
       const card = this.rules?.pickUp(from);
       if (card) {
-        this.heldCard = card;
+        this.heldEntity = card;
         this.cardLastFrom = from;
         this.scene.addEntity(card);
       }
@@ -142,15 +144,16 @@ export class EngineStateService {
 
   pickUpStack(from: CardStackEntity, pickupCount: number) {
     if (!this.isHolding()) {
-      if (this.rules?.canPickUpStack(from, pickupCount)) {
-        this.heldStack = new CardStackEntity('cards');
-        this.heldStack.setSize(sizeCards(this.rules));
+      if ((this.rules as CardGameRules)?.canPickUpStack(from, pickupCount)) {
+        const cse = new CardStackEntity('cards');
+        this.heldEntity = cse;
+        cse.setSize(sizeCards(this.rules as CardGameRules));
         from.drawCards(pickupCount).forEach(card => {
-          this.heldStack?.addCard(card);
+          cse?.addCard(card);
         });
   
         this.cardLastFrom = from;
-        this.scene.addEntity(this.heldStack);
+        this.scene.addEntity(cse);
       }
       this.engine.doTick(false);
     }
@@ -159,35 +162,30 @@ export class EngineStateService {
   drop(dropTo: CardDeckEntity | CardStackEntity) {
     if (this.isHolding()) {
       // Single Card
-      if (this.heldCard) {
+      if (this.heldEntity) {
         if(this.canDropTo(dropTo)) {
-          this.scene.removeEntity(this.heldCard!);
-          dropTo.addEntity(this.heldCard!);
-          this.heldCard = null;
-          this.engine.doTick();
-        }
-        
-      }
-      // Stack
-      else if (this.heldStack) {
-        if(this.canDropTo(dropTo)) {
-          this.scene.removeEntity(this.heldStack!);
-          this.heldStack.cards().forEach(card => {
-            dropTo.addEntity(card);
-          });
-          this.heldStack = null;
+          this.scene.removeEntity(this.heldEntity!);
+          if (this.heldEntity instanceof CardEntity) {
+            dropTo.addEntity(this.heldEntity!);
+          }
+          else if (this.heldEntity instanceof CardStackEntity) {
+            this.heldEntity.cards().forEach(card => {
+              dropTo.addEntity(card);
+            });
+          }
+          this.heldEntity = null;
           this.engine.doTick();
         }
       }
     }
   }
 
-  canDropTo(dropTo: CardDeckEntity | CardStackEntity): boolean {
-    return this.rules?.canDropTo(dropTo, this.cardLastFrom, this.heldCard || this.heldStack) || false;
+  canDropTo(dropTo: Holder): boolean {
+    return this.rules?.canDropTo(dropTo, this.cardLastFrom, this.heldEntity) || false;
   }
 
   isHolding(): boolean {
-    return this.heldCard !== null || this.heldStack !== null;
+    return this.heldEntity !== null;
   }
 }
 
