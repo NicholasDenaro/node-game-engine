@@ -56,8 +56,6 @@ export class CardEntity extends AngularEntity implements Holdable {
       suit: this.suit,
       value: this.value,
       isUp: this.isUp,
-      //width: this.width,
-      //height: this.height,
     }
   }
 
@@ -65,7 +63,5 @@ export class CardEntity extends AngularEntity implements Holdable {
     this.suit = edata.suit;
     this.value = edata.value;
     this.isUp = edata.isUp;
-    //this.width = edata.width;
-    //this.height = edata.height;
   }
 }
