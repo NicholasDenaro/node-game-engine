@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class WebsocketMultiplayerService {
 
   private connection?: LobbyConnection;
 
-  public readonly signalServerUri:string = 'ws://localhost:80';
+  public readonly signalServerUri:string = environment.signalServerUri;
 
   constructor() { }
 
@@ -21,6 +22,7 @@ export class WebsocketMultiplayerService {
   }
 
   async canConnect() {
+    console.log(`Connecting to ${this.signalServerUri}...`);
     this.webSocket = new WebSocket(this.signalServerUri);
 
     return new Promise<boolean>((resolve, reject) => {

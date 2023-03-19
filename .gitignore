@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Other files
+angular-demo/src/environments/environment.production.ts
