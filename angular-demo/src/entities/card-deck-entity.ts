@@ -1,7 +1,6 @@
+import { AngularEntity, AngularPainter, EntitySaveData } from "game-engine-angular";
 import { Scene } from "game-engine";
 import { CardDeckComponent } from "src/app/card-deck/card-deck.component";
-import { AngularEntity, EntitySaveData } from "src/utils/angular-entity";
-import { AngularPainter } from "src/utils/angular-painter";
 import { ObserverEngine } from "src/utils/observer-engine";
 import { CardEntity } from "./card-entity";
 

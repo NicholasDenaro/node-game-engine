@@ -1,44 +1,46 @@
-import { Entity } from "./entity";
+import { Entity, EntityID } from "./entity";
 import { Scene } from "./scene";
 
 export abstract class Engine {
 
-    static readonly constructors: {[key: string]: (args: any) => Entity} = {};
+  static readonly constructors: { [key: string]: (args: any) => Entity } = {};
 
-    protected isRunning: boolean = false;
+  static readonly entities: { [key: EntityID]: Entity } = {};
 
-    protected sceneBuffer = new Array<{ key: string; scene: Scene; }>;
+  protected isRunning: boolean = false;
 
-    protected scenes: { [key: string]: Scene; } = {};
+  protected sceneBuffer = new Array<{ key: string; scene: Scene; }>;
 
-    addScene(key: string, scene: Scene): void {
-        if (!this.isRunning) {
-            this.scenes[key] = scene;
-        }
-        else {
-            this.sceneBuffer.push({key, scene});
-        }
+  protected scenes: { [key: string]: Scene; } = {};
+
+  addScene(key: string, scene: Scene): void {
+    if (!this.isRunning) {
+      this.scenes[key] = scene;
     }
-
-    abstract start(): Promise<void> | void;
-    abstract stop(): Promise<void> | void;
-
-    async draw(): Promise<void> {
-        const keys = Object.keys(this.scenes);
-        for (let i = 0 ; i < keys.length; i++) {
-            await this.scenes[keys[i]].draw();
-        }
+    else {
+      this.sceneBuffer.push({ key, scene });
     }
+  }
 
-    async tick(): Promise<void> {
-        const scenes = this.sceneBuffer.splice(0, this.sceneBuffer.length);
-        scenes.forEach(scene => {
-            this.scenes[scene.key] = scene.scene;
-        })
+  abstract start(): Promise<void> | void;
+  abstract stop(): Promise<void> | void;
 
-        const keys = Object.keys(this.scenes);
-        for (let i = 0 ; i < keys.length; i++) {
-            await this.scenes[keys[i]].tick();
-        }
+  async draw(): Promise<void> {
+    const keys = Object.keys(this.scenes);
+    for (let i = 0; i < keys.length; i++) {
+      await this.scenes[keys[i]].draw();
     }
+  }
+
+  async tick(): Promise<void> {
+    const scenes = this.sceneBuffer.splice(0, this.sceneBuffer.length);
+    scenes.forEach(scene => {
+      this.scenes[scene.key] = scene.scene;
+    })
+
+    const keys = Object.keys(this.scenes);
+    for (let i = 0; i < keys.length; i++) {
+      await this.scenes[keys[i]].tick();
+    }
+  }
 }

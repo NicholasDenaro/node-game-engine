@@ -1,8 +1,7 @@
-import { Scene } from "game-engine";
+import { Engine, Scene } from "game-engine";
 import { CardComponent } from "src/app/card/card.component";
-import { ObserverEngine } from "src/utils/observer-engine";
-import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 import { Holdable } from "./holdable";
+import { AngularEntity, EntitySaveData } from "game-engine-angular"
 
 export class CardEntity extends AngularEntity implements Holdable {
 
@@ -45,7 +44,7 @@ export class CardEntity extends AngularEntity implements Holdable {
   }
 
   override save(): EntitySaveData | any {
-    ObserverEngine.constructors[CardEntity.name as any] = (edata) => {
+    Engine.constructors[CardEntity.name as any] = (edata) => {
       const cse = new CardEntity('', '0', true);
       cse.load(edata);
       return cse;

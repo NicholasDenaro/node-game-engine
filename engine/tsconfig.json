@@ -8,9 +8,10 @@
         "sourceMap": true,
         "outDir": "dist",
         "esModuleInterop": false,
-        "moduleResolution": "classic",
-        "types": ["node"]
+        "moduleResolution": "node",
+        "types": ["node"],
+        "resolveJsonModule": true
     },
-    "include": ["src/**/*"],
+    "include": ["index.ts", "src/**/*", "package.json", "index.ts"],
     "exclude": ["node_modules", "**/*.spec.ts"],
 }

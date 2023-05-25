@@ -6,7 +6,7 @@ import { CardComponent } from './card/card.component';
 import { HandComponent } from './hand/hand.component';
 import { CardStackComponent } from './card-stack/card-stack.component';
 import { CardDeckComponent } from './card-deck/card-deck.component';
-import { ViewDirective } from './view.directive';
+import { UtilsModule } from 'game-engine-angular';
 import { HeaderComponent } from './header/header.component';
 import { KlondikeComponent } from './games/klondike/klondike.component';
 import { SpiderComponent } from './games/spider/spider.component';
@@ -19,14 +19,14 @@ import { LobbyComponent } from './games/lobby/lobby.component';
     HandComponent,
     CardStackComponent,
     CardDeckComponent,
-    ViewDirective,
     HeaderComponent,
     KlondikeComponent,
     SpiderComponent,
     LobbyComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    UtilsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

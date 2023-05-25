@@ -1,15 +1,18 @@
 {
-  "name": "angular-demo",
+  "name": "game-engine-angular",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --configuration production",
-    "build": "ng build --configuration development",
-    "build-prod": "ng build --configuration production",
+    "start": "ng serve",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "pack": "cd ./dist/game-engine-library && npm pack"
   },
   "private": true,
+  "peerDependencies": {
+    "game-engine": "file:game-engine-1.0.0.tgz"
+  },
   "dependencies": {
     "@angular/animations": "^15.2.0",
     "@angular/common": "^15.2.0",
@@ -19,18 +22,15 @@
     "@angular/platform-browser": "^15.2.0",
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
-    "game-engine": "file:game-engine-1.0.0.tgz",
-    "game-engine-angular": "file:game-engine-angular-0.0.1.tgz",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^15.2.0",
+    "@angular-devkit/build-angular": "^15.2.4",
     "@angular/cli": "~15.2.0",
     "@angular/compiler-cli": "^15.2.0",
     "@types/jasmine": "~4.3.0",
-    "@types/node": "^18.14.2",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",

@@ -8,6 +8,9 @@
     "strict": true,
     "noImplicitOverride": true,
     "paths": {
+      "game-engine-angular": [
+        "dist/game-engine-angular"
+      ]
     },
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,

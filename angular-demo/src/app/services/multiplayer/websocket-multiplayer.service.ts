@@ -24,6 +24,7 @@ export class WebsocketMultiplayerService {
   async canConnect() {
     console.log(`Connecting to ${this.signalServerUri}...`);
     this.webSocket = new WebSocket(this.signalServerUri);
+    this.webSocket.onmessage = (event) => this.handleMessage(event);
 
     return new Promise<boolean>((resolve, reject) => {
       this.webSocket!.onopen = (event) => {
@@ -42,6 +43,7 @@ export class WebsocketMultiplayerService {
   start(): Observable<{ code: string, data?: string }> {
     if (!this.webSocket) {
       this.webSocket = new WebSocket(this.signalServerUri);
+      this.webSocket.onmessage = (event) => this.handleMessage(event);
 
       this.webSocket.onopen = (event) => {
         console.log('Found websocket server');
@@ -59,7 +61,6 @@ export class WebsocketMultiplayerService {
       this.messageSubject.next({code: 'error', data: JSON.stringify(event)});
     };
 
-    this.webSocket.onmessage = (event) => this.handleMessage(event);
 
     return this.messageSubject.asObservable();
   }
@@ -71,6 +72,14 @@ export class WebsocketMultiplayerService {
     const command = message[0];
     const data = message.slice(1) as string[];
     switch (command) {
+      // Host & Client
+      case 'userId':
+        console.log(`userId=${data[0]}`);
+        this.connection?.setUserId(data[0]);
+        if (this.connection instanceof HostConnection) {
+          this.messageSubject.next({ code: 'joined', data: data[0] });
+        }
+        break;
       // Host & Client
       case 'lobby':
         console.log('websocket-lobby');
@@ -122,6 +131,8 @@ export class WebsocketMultiplayerService {
 
 abstract class LobbyConnection {
 
+  protected userId: string = '';
+
   constructor(protected messageSubject: Subject<{ code: string, data?: string }>) {}
 
   protected ice = {
@@ -133,6 +144,10 @@ abstract class LobbyConnection {
   public lobbyCode = '';
 
   abstract send(message: string): void;
+
+  setUserId(userId: string) {
+    this.userId = userId;
+  }
 
   handleLobbyResponse(lobby: string): void {
     this.lobbyCode = lobby;
@@ -178,7 +193,7 @@ class HostConnection extends LobbyConnection {
     userConnection.onicecandidate = async evt => {
       if (this.addIce(evt, userConnection)) {
         console.log('sending offer');
-        responseCallback(`offer=:=${this.lobbyCode}=:=${user}=:=${userConnection.localDescription?.sdp}`);
+        responseCallback(`offer=:=${user}=:=${userConnection.localDescription?.sdp}`);
       }
     }
     userConnection.createOffer().then(sessionInit => userConnection.setLocalDescription(sessionInit));
@@ -226,7 +241,7 @@ class ClientConnection extends LobbyConnection {
     this.connection.onicecandidate = async evt => {
       if (this.addIce(evt, this.connection)) {
         console.log('sending answer');
-        responseCallback(`answer=:=${this.lobbyCode}=:=${user}=:=${this.connection.localDescription?.sdp}`);
+        responseCallback(`answer=:=${user}=:=${this.connection.localDescription?.sdp}`);
       }
     }
     this.connection.setRemoteDescription(new RTCSessionDescription({ type: 'offer', sdp: sdp }))

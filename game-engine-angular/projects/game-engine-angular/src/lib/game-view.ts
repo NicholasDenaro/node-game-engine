@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, TemplateRef, ViewChildren, ViewContainerRef } from "@angular/core";
 import { Observable, Subject } from "rxjs";
-import { ViewDirective } from "src/app/view.directive";
+import { ViewDirective } from "./view.directive";
 import { AngularEntity } from "./angular-entity";
 
 @Component({
