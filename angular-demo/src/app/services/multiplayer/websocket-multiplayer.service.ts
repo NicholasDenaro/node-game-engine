@@ -61,6 +61,7 @@ export class WebsocketMultiplayerService {
       this.messageSubject.next({code: 'error', data: JSON.stringify(event)});
     };
 
+    this.webSocket.onmessage = (event) => this.handleMessage(event);
 
     return this.messageSubject.asObservable();
   }

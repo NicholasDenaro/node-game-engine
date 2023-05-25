@@ -73,7 +73,6 @@ class MovingBlock extends SpriteEntity {
 }
 
 async function init(): Promise<void> {
-
   const width = 240;
   const height = 160;
   const view = new Canvas2DView(width, height, {dpi: 120, scale: 3});

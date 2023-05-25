@@ -126,7 +126,7 @@ export class HeaderComponent {
       }
       this.autoTurnedOffAutomatically = false;
     }
-
+    
     event.stopPropagation();
   }
 }
