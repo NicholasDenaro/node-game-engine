@@ -22,6 +22,14 @@ export abstract class Engine {
     }
   }
 
+  sceneKey(scene: Scene): string {
+    return Object.keys(this.scenes).filter(sceneKey => this.scenes[sceneKey] === scene)[0];
+  }
+
+  activateScene(scene: string) {
+    this.scenes[scene]?.activate();
+  }
+
   abstract start(): Promise<void> | void;
   abstract stop(): Promise<void> | void;
 
@@ -38,7 +46,8 @@ export abstract class Engine {
       this.scenes[scene.key] = scene.scene;
     })
 
-    const keys = Object.keys(this.scenes);
+    
+    const keys = Object.entries(this.scenes).filter(val => val[1].isActivated()).map(val => val[0]);
     for (let i = 0; i < keys.length; i++) {
       await this.scenes[keys[i]].tick();
     }

@@ -2,6 +2,7 @@ import { CanActivate } from "./can-activate";
 import { Controller, ControllerState } from "./controller";
 import { Engine } from "./engine";
 import { Entity } from "./entity";
+import { Canvas2DView } from "./impls/canvas-view";
 import { View } from "./view";
 
 export class Scene implements CanActivate {
@@ -23,12 +24,18 @@ export class Scene implements CanActivate {
 
   private isActive = false;
 
+  isActivated(): boolean {
+    return this.isActive;
+  }
+
   activate() {
     this.isActive = true;
+    this.view.activate();
   }
 
   deactivate() {
     this.isActive = false;
+    this.view.deactivate();
   }
 
   addController(controller: Controller) {
@@ -43,6 +50,25 @@ export class Scene implements CanActivate {
     }
 
     return false;
+  }
+
+  constrolDetails(binding: string): any | undefined {
+    for (let i = 0; i < this.controllers.length; i++) {
+      if (this.controllers[i].getDetails(binding)) {
+        const details = this.controllers[i].getDetails(binding);
+        if (this.view instanceof Canvas2DView) {
+          if (details.x) {
+            details.x = details.x * (this.view.dpi / 96) / this.view.scale;
+          }
+          if (details.y) {
+            details.y = details.y * (this.view.dpi / 96) / this.view.scale;
+          }
+        }
+        return details;
+      }
+    }
+
+    return undefined;
   }
 
   addEntity(entity: Entity) {

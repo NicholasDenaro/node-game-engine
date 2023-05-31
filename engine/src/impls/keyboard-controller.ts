@@ -1,6 +1,8 @@
 import { Controller, ControllerBinding, ControllerState } from "../controller";
 
-export type KeyBinding = { binding: ControllerBinding, keys: string[] };
+export type KeyboardBinding = ControllerBinding<undefined>;
+
+export type KeyBinding = { binding: KeyboardBinding, keys: string[] };
 
 export class KeyboardController implements Controller {
 
@@ -29,11 +31,15 @@ export class KeyboardController implements Controller {
     return this.binding(binding)?.is(state);
   }
 
-  binding(binding: string): ControllerBinding | null {
+  getDetails(binding: string): {} | null {
+    return this.binding(binding)?.getDetails();
+  }
+
+  binding(binding: string): KeyboardBinding | null {
     return this.controls[binding]?.binding;
   }
 
-  input(key: string): ControllerBinding | null {
+  input(key: string): KeyboardBinding | null {
     return this.inputs[key]?.binding;
   }
 

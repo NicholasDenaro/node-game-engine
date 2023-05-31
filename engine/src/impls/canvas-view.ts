@@ -3,19 +3,24 @@ import { Painter } from "../painter";
 import { View } from "../view";
 
 export class Canvas2DView implements View {
+  private activated: boolean = false;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private text: HTMLParagraphElement;
   private div: HTMLDivElement;
-  private scale: number;
+  public readonly scale: number;
+  public readonly dpi: number;
+  private bgColor: string;
 
-  constructor(width: number, height: number, options: {dpi: number, scale?: number}) {
+  constructor(width: number, height: number, options: { scale?: number, bgColor: string }) {
     this.scale = options.scale ?? 1;
+    this.dpi = 96 * window.window.devicePixelRatio;
+    this.bgColor = options.bgColor ?? '#00FFFFFF';
 
     this.canvas = document.createElement('canvas');
     this.canvas.width = width * this.scale;
     this.canvas.height = height * this.scale;
-    this.canvas.style.width = `${this.canvas.width * 96 / options.dpi}px`;
+    this.canvas.style.width = `${this.canvas.width * 96 / this.dpi}px`;
     this.ctx = this.canvas.getContext('2d') || {
       canvas: HTMLCanvasElement,
       getContextAttributes(): CanvasRenderingContext2DSettings {
@@ -38,7 +43,7 @@ export class Canvas2DView implements View {
 
   async draw(entities: Array<Entity>): Promise<void> {
     this.ctx.clearRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
-    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.fillStyle = this.bgColor;
     this.ctx.fillRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
     this.ctx.scale(this.scale, this.scale);
     for (let i = 0; i < entities.length; i++) {
@@ -52,6 +57,20 @@ export class Canvas2DView implements View {
 
   viewElement(): HTMLElement {
     return this.div;
+  }
+
+  activate(): void {
+    if (!this.activated) {
+      document.body.appendChild(this.viewElement());
+    }
+    this.activated = true;
+  }
+
+  deactivate(): void {
+    if (this.activated) {
+      document.body.removeChild(this.viewElement());
+    }
+    this.activated = false;
   }
 }
 
