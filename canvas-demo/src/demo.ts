@@ -3,7 +3,7 @@ import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, KeyboardContr
 const screenWidth = 240;
 const screenHeight = 160;
 const scale = 3;
-new Sprite('player', require('./assets/player.png').default, { spriteWidth: 24, spriteHeight: 32 });
+new Sprite('player', require('./assets/player.png').default, { spriteWidth: 24, spriteHeight: 32, spriteOffsetX: 16, spriteOffsetY: 24 });
 new Sprite('cursor', require('./assets/crosshair.png').default, { spriteWidth: 16, spriteHeight: 16, spriteOffsetX: 8, spriteOffsetY: 8 });
 new Sound('weewoo', require('./assets/sfxR07.wav').default);
 new Sound('woopwoop', require('./assets/GAME_MENU_SCORE_SFX001769.wav').default);
@@ -35,16 +35,28 @@ class MovingBlock extends SpriteEntity {
   }
 
   tick(scene: Scene): Promise<void> {
+    if (scene.isControl('run', ControllerState.Down)) {
+      this.move(scene);
+    }
+
+    this.move(scene);
+
+    return Promise.resolve();
+  }
+
+  move(scene: Scene) {
     let moved = false;
     const lastX = this.x;
     const lastY = this.y;
     if (scene.isControl('right', ControllerState.Down)) {
       this.x += 0.25;
       moved = true;
+      this.flipHorizontal = false;
     }
     if (scene.isControl('left', ControllerState.Down)) {
       this.x -= 0.25;
       moved = true;
+      this.flipHorizontal = true;
     }
 
     if (scene.entitiesByType(Wall).some(wall => wall.collision(this))) {
@@ -76,12 +88,10 @@ class MovingBlock extends SpriteEntity {
     } else {
       this.imageIndex = 0;
     }
-
-    return Promise.resolve();
   }
 }
 
-let loz: {stop: () => void};
+let loz: { stop: () => void };
 class Cursor extends SpriteEntity {
   constructor() {
     super(new SpritePainter(Sprite.Sprites['cursor']));
@@ -97,7 +107,7 @@ class Cursor extends SpriteEntity {
         scene.deactivate();
         engine.activateScene('pause');
         loz = Sound.Sounds['loz'].play();
-      } else if(engine.sceneKey(scene) === 'pause') {
+      } else if (engine.sceneKey(scene) === 'pause') {
         scene.deactivate();
         engine.activateScene('main');
         Sound.Sounds['woopwoop'].play();
@@ -109,6 +119,21 @@ class Cursor extends SpriteEntity {
   }
 }
 
+class Blob extends SpriteEntity {
+  constructor(x: number, y: number) {
+    super(new SpritePainter((ctx) => this.draw(ctx), { spriteWidth: 16, spriteHeight: 16 }), x, y);
+  }
+
+  tick() {
+    return Promise.resolve();
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.fillStyle = '#00FFFF';
+    ctx.fillRect(0, 0, 16, 16);
+  }
+}
+
 async function init() {
 
   await Sprite.waitForLoad();
@@ -117,7 +142,8 @@ async function init() {
   const scene = new Scene(view);
   scene.addController(new KeyboardController(keyMap));
   scene.addController(new MouseController(mouseMap));
-  scene.addEntity(new MovingBlock(10, 10));
+  scene.addEntity(new Blob(30, 30));
+  scene.addEntity(new MovingBlock(50, 50));
 
   // top/bottom
   scene.addEntity(new Wall(0, 0, screenWidth, 1));
@@ -145,19 +171,23 @@ async function init() {
 const keyMap = [
   {
     binding: new ControllerBinding<undefined>('left'),
-    keys: ['ArrowLeft', 'a'],
+    keys: ['ArrowLeft', 'a', 'A'],
   },
   {
     binding: new ControllerBinding<undefined>('right'),
-    keys: ['ArrowRight', 'd'],
+    keys: ['ArrowRight', 'd', 'D'],
   },
   {
     binding: new ControllerBinding<undefined>('up'),
-    keys: ['ArrowUp', 'w'],
+    keys: ['ArrowUp', 'w', 'W'],
   },
   {
     binding: new ControllerBinding<undefined>('down'),
-    keys: ['ArrowDown', 's'],
+    keys: ['ArrowDown', 's', 'S'],
+  },
+  {
+    binding: new ControllerBinding<undefined>('run'),
+    keys: ['Shift'],
   },
   {
     binding: new ControllerBinding<undefined>('action'),

@@ -1,6 +1,7 @@
 import { Controller, ControllerBinding, ControllerState } from "../controller";
+import { View } from "../view";
 
-export type MouseDetails = {x: number, y: number};
+export type MouseDetails = {x: number, y: number, dx: number, dy: number};
 
 export type MouseBinding = ControllerBinding<MouseDetails>;
 
@@ -10,6 +11,7 @@ export class MouseController implements Controller {
 
   private controls: { [binding: string]: ButtonBinding } = {};
   private inputs: { [key: number]: ButtonBinding } = {};
+  private boundView: View;
 
   constructor(keyMap: ButtonBinding[]) {
     for (let i = 0; i < keyMap.length; i++) {
@@ -39,6 +41,10 @@ export class MouseController implements Controller {
     return this.binding(binding)?.is(state);
   }
 
+  bindToView(view: View) {
+    this.boundView = view;
+  }
+
   getDetails(binding: string): MouseDetails | null {
     return this.binding(binding)?.getDetails() || null;
   }
@@ -51,27 +57,56 @@ export class MouseController implements Controller {
     return this.inputs[key]?.binding;
   }
 
+
   tick(): void | Promise<void> {
     const keys = Object.keys(this.controls);
     for (let i = 0; i < keys.length; i++) {
       this.controls[keys[i]]?.binding.tick();
     }
+    if (this.moveAct && !this.moved) {
+      this.moveAct = false;
+      for (let i = 0; i < keys.length; i++) {
+        const binding = this.controls[keys[i]]?.binding;
+        const details: MouseDetails = binding.getDetails();
+        binding.update(binding.getState(), { x: details.x, y: details.y, dx: 0, dy: 0});
+      }
+    }
+    if (this.moved) {
+      this.moveAct = true;
+      this.moved = false;
+    }
   }
 
   private onMouseDown(event: MouseEvent) {
-    this.input(event.button)?.update(ControllerState.Press, {x: event.x, y: event.y});
-    event.preventDefault();
-    event.stopPropagation();
+    if (this.boundView && !this.boundView.hasElement(event.target)) return;
+    this.input(event.button)?.update(ControllerState.Press, { x: event.x, y: event.y, dx: event.movementX, dy: event.movementY });
+    if (!document.pointerLockElement) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }
 
   private onMouseUp(event: MouseEvent) {
-    this.input(event.button)?.update(ControllerState.Release, { x: event.x, y: event.y });
-    event.preventDefault();
-    event.stopPropagation();
+    if (this.boundView && !this.boundView.hasElement(event.target)) return;
+    this.input(event.button)?.update(ControllerState.Release, { x: event.x, y: event.y, dx: event.movementX, dy: event.movementY });
+    if (!document.pointerLockElement) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }
 
+  private moved = false;
+  private moveAct = false;
   private onMouseMove(event: MouseEvent) {
-    Object.keys(this.controls).forEach(control => this.controls[control].binding.update(ControllerState.Unheld, { x: event.x, y: event.y }));
+    if (document.pointerLockElement) {
+      Object.keys(this.controls).forEach(control => this.controls[control].binding.update(ControllerState.Unheld, { x: event.x, y: event.y, dx: event.movementX, dy: event.movementY }));
+      this.moved = true;
+      return;
+    }
+
+    if (this.boundView && !this.boundView.hasElement(event.target)) return;
+    Object.keys(this.controls).forEach(control => this.controls[control].binding.update(ControllerState.Unheld, { x: event.x, y: event.y, dx: event.movementX, dy: event.movementY }));
+    this.moved = true;
     event.preventDefault();
     event.stopPropagation();
   }

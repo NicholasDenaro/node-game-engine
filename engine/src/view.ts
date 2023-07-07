@@ -5,4 +5,5 @@ export interface View extends CanActivate {
     debugInfo(info: any): void;
     draw(entities: Array<Entity>): Promise<void>;
     viewElement(): HTMLElement;
+    hasElement(element: Element | EventTarget): boolean;
 }

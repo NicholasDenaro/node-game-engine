@@ -52,10 +52,18 @@ export class KeyboardController implements Controller {
 
   private onKeyDown(event: KeyboardEvent) {
     this.input(event.key)?.update(ControllerState.Press);
+    if (event.key != 'F12') {
+      event.preventDefault();
+      return false;
+    }
   }
 
   private onKeyUp(event: KeyboardEvent) {
     this.input(event.key)?.update(ControllerState.Release);
+    if (event.key != 'F12') {
+      event.preventDefault();
+      return false;
+    }
   }
 }
 

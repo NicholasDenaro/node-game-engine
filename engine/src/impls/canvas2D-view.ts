@@ -1,5 +1,6 @@
 import { Entity } from "../entity";
 import { Painter } from "../painter";
+import { Rectangle } from "../utils/rectangle";
 import { View } from "../view";
 
 export class Canvas2DView implements View {
@@ -41,6 +42,19 @@ export class Canvas2DView implements View {
     this.text.innerText = JSON.stringify(info);
   }
 
+  showDebugInfo() {
+    this.text.style.display = 'block';
+  }
+
+  hideDebugInfo() {
+    this.text.style.display = 'none';
+  }
+
+  rectangle() {
+    const rect =  this.canvas.getClientRects();
+    return new Rectangle(rect[0].x, rect[0].y, rect[0].width, rect[0].height);
+  }
+
   async draw(entities: Array<Entity>): Promise<void> {
     this.ctx.clearRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
     this.ctx.fillStyle = this.bgColor;
@@ -57,6 +71,10 @@ export class Canvas2DView implements View {
 
   viewElement(): HTMLElement {
     return this.div;
+  }
+
+  hasElement(element: Element | EventTarget): boolean {
+    return this.canvas == element;
   }
 
   activate(): void {

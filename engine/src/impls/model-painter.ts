@@ -1,20 +1,20 @@
 import { Engine } from "../engine";
 import { Sprite } from "./sprite";
 import { Rectangle } from "../utils/rectangle";
-import { Painter2D } from "./canvas2D-view";
+import { Painter3D } from "./canvas3D-view";
 import { SpriteEntity } from "./sprite-entity";
 
-export class SpritePainter extends Painter2D {
+export class ModelPainter extends Painter3D {
 
   private eid: number;
   private sprite: Sprite;
-  private directDraw: (ctx: CanvasRenderingContext2D) => void;
+  private directDraw: (gfx: WebGL2RenderingContext, program: WebGLProgram, ctx: CanvasRenderingContext2D) => void;
 
   setEid(eid: number) {
     this.eid = eid;
   }
 
-  constructor(img: Sprite | ((ctx: CanvasRenderingContext2D) => void), private options?: { spriteWidth: number, spriteHeight: number, spriteOffsetX?: number, spriteOffsetY?: number }) {
+  constructor(img: Sprite | ((gfx: WebGL2RenderingContext, program: WebGLProgram, ctx: CanvasRenderingContext2D) => void), private options?: { spriteWidth: number, spriteHeight: number, spriteOffsetX?: number, spriteOffsetY?: number }) {
     super(null);
     if (img instanceof Sprite) {
       this.sprite = img;
@@ -26,7 +26,7 @@ export class SpritePainter extends Painter2D {
     this.options.spriteOffsetY = this.options.spriteOffsetY || 0;
   }
 
-  override paint(ctx: CanvasRenderingContext2D): void {
+  override paint(gfx: WebGL2RenderingContext, program: WebGLProgram, ctx: CanvasRenderingContext2D): void {
     if (this.sprite) {
       const entity = Engine.entities[this.eid] as SpriteEntity;
       const col = entity.imageIndex % this.sprite.getGrid().columns;
@@ -64,7 +64,7 @@ export class SpritePainter extends Painter2D {
           -(entity.getPos().y - this.options.spriteOffsetY) / this.options.spriteHeight);
       }
     } else if (this.directDraw) {
-      this.directDraw(ctx);
+      this.directDraw(gfx, program, ctx);
     }
   }
 

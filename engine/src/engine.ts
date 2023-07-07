@@ -30,6 +30,21 @@ export abstract class Engine {
     this.scenes[scene]?.activate();
   }
 
+  deactivateScene(scene: string) {
+    this.scenes[scene]?.deactivate();
+  }
+
+  deactivateAllScenes() {
+    for (let scene in this.scenes) {
+      this.scenes[scene]?.deactivate();
+    }
+  }
+
+  switchToScene(scene: string) {
+    this.deactivateAllScenes();
+    this.activateScene(scene);
+  }
+
   abstract start(): Promise<void> | void;
   abstract stop(): Promise<void> | void;
 

@@ -32,6 +32,10 @@ export class ControllerBinding<T extends {}> {
     this.duration++;
   }
 
+  getState(): ControllerState {
+    return this.state;
+  }
+
   getDetails(): T {
     return JSON.parse(JSON.stringify(this.details)) as T;
   }

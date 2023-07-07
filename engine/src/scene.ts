@@ -2,13 +2,19 @@ import { CanActivate } from "./can-activate";
 import { Controller, ControllerState } from "./controller";
 import { Engine } from "./engine";
 import { Entity } from "./entity";
-import { Canvas2DView } from "./impls/canvas-view";
+import { Canvas2DView } from "./impls/canvas2D-view";
+import { Canvas3DView } from "./impls/canvas3D-view";
+import { MouseController } from "./impls/mouse-controller";
 import { View } from "./view";
 
 export class Scene implements CanActivate {
 
   constructor(private view: View) {
 
+  }
+
+  getView(): View {
+    return this.view;
   }
 
   private entities = new Array<Entity>();
@@ -40,6 +46,9 @@ export class Scene implements CanActivate {
 
   addController(controller: Controller) {
     this.controllers.push(controller);
+    if (controller instanceof MouseController) {
+      controller.bindToView(this.view);
+    }
   }
 
   isControl(binding: string, state: ControllerState) {
@@ -52,16 +61,24 @@ export class Scene implements CanActivate {
     return false;
   }
 
-  constrolDetails(binding: string): any | undefined {
+  controlDetails(binding: string): any | undefined {
     for (let i = 0; i < this.controllers.length; i++) {
       if (this.controllers[i].getDetails(binding)) {
         const details = this.controllers[i].getDetails(binding);
         if (this.view instanceof Canvas2DView) {
           if (details.x) {
-            details.x = details.x * (this.view.dpi / 96) / this.view.scale;
+            details.x = ((details.x - this.view.rectangle().x) / this.view.scale) * (this.view.dpi / 96);
           }
           if (details.y) {
-            details.y = details.y * (this.view.dpi / 96) / this.view.scale;
+            details.y = ((details.y - this.view.rectangle().y) / this.view.scale) * (this.view.dpi / 96);
+          }
+        }
+        if (this.view instanceof Canvas3DView) {
+          if (details.x) {
+            details.x = ((details.x - this.view.rectangle().x) / this.view.scale) * (this.view.dpi / 96);
+          }
+          if (details.y) {
+            details.y = ((details.y - this.view.rectangle().y) / this.view.scale) * (this.view.dpi / 96);
           }
         }
         return details;
@@ -107,7 +124,7 @@ export class Scene implements CanActivate {
     }
 
     for (let i = 0; i < this.entities.length; i++) {
-      await this.entities[i].tick(this);
+      await (this.entities[i].tick(this) || Promise.resolve());
     }
   }
 
