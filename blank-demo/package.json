@@ -1,0 +1,24 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/game.ts",
+  "scripts": {
+    "pack": "del /q /s 1>nul dist && webpack --config webpack.config.js && copy src\\index.html dist\\index.html",
+    "start": "npm run pack && start ./dist/index.html",
+    "reload-engine": "copy ..\\engine\\dist\\game-engine-* .\\ && npm uninstall game-engine && npm install game-engine-1.0.1.tgz",
+    "full-reload": "npm run reload-engine && npm run pack && npm run start"
+  },
+  "author": "Nicholas Denaro",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/webpack-env": "^1.18.1",
+    "file-loader": "^6.2.0",
+    "ts-loader": "^9.4.2",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "game-engine": "file:game-engine-1.0.1.tgz"
+  }
+}

@@ -1,7 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
-import { AngularView } from 'src/utils/angular-view';
 import { EngineStateService } from './engine-state.service';
-import { GameView } from 'src/utils/game-view';
+import { AngularView, GameView } from 'game-engine-angular';
 
 @Component({
   selector: 'app-root',

@@ -1,40 +1,69 @@
 import { Controller, ControllerBinding, ControllerState } from "../controller";
 
+export type KeyboardBinding = ControllerBinding<undefined>;
+
+export type KeyBinding = { binding: KeyboardBinding, keys: string[] };
+
 export class KeyboardController implements Controller {
-    private controls: {[key: string]: ControllerBinding} = {};
-    constructor(private keyMap: {[key: string]: ControllerBinding}) {
-        const keys = Object.keys(this.keyMap);
-        for (let i = 0; i < keys.length; i++) {
-            this.controls[keyMap[keys[i]].name()] = keyMap[keys[i]];
-        }
-        addEventListener('keydown', (event: KeyboardEvent) => this.onKeyDown(event));
-        addEventListener('keyup', (event: KeyboardEvent) => this.onKeyUp(event));
+
+  private controls: { [binding: string]: KeyBinding } = {};
+  private inputs: { [key: string]: KeyBinding } = {};
+
+  constructor(keyMap: KeyBinding[]) {
+    for (let i = 0; i < keyMap.length; i++) {
+      this.controls[keyMap[i].binding.name()] = keyMap[i];
+      keyMap[i].keys.forEach(key => {
+        this.inputs[key] = keyMap[i];
+      })
+    }
+    addEventListener('keydown', (event: KeyboardEvent) => this.onKeyDown(event));
+    addEventListener('keyup', (event: KeyboardEvent) => this.onKeyUp(event));
+  }
+
+  isControl(binding: string, state: ControllerState): boolean {
+    switch (state) {
+      case ControllerState.Down:
+        return this.binding(binding)?.isDown();
+      case ControllerState.Up:
+        return this.binding(binding)?.isUp();
     }
 
-    isControl(binding: string, state: ControllerState): boolean {
-        switch(state) {
-            case ControllerState.Down:
-                return this.controls[binding]?.isDown();
-            case ControllerState.Up:
-                return this.controls[binding]?.isUp();
-        }
+    return this.binding(binding)?.is(state);
+  }
 
-        return this.controls[binding]?.is(state);
-    }
+  getDetails(binding: string): {} | null {
+    return this.binding(binding)?.getDetails();
+  }
 
-    tick(): void | Promise<void> {
-        const keys = Object.keys(this.keyMap);
-        for (let i = 0; i < keys.length; i++) {
-            this.keyMap[keys[i]]?.tick();
-        }
+  binding(binding: string): KeyboardBinding | null {
+    return this.controls[binding]?.binding;
+  }
+
+  input(key: string): KeyboardBinding | null {
+    return this.inputs[key]?.binding;
+  }
+
+  tick(): void | Promise<void> {
+    const keys = Object.keys(this.controls);
+    for (let i = 0; i < keys.length; i++) {
+      this.controls[keys[i]]?.binding.tick();
     }
-    
-    private onKeyDown(event: KeyboardEvent) {
-        this.keyMap[event.key].update(ControllerState.Press);
+  }
+
+  private onKeyDown(event: KeyboardEvent) {
+    this.input(event.key)?.update(ControllerState.Press);
+    if (event.key != 'F12') {
+      event.preventDefault();
+      return false;
     }
-    
-    private onKeyUp(event: KeyboardEvent) {
-        this.keyMap[event.key].update(ControllerState.Release);
+  }
+
+  private onKeyUp(event: KeyboardEvent) {
+    this.input(event.key)?.update(ControllerState.Release);
+    if (event.key != 'F12') {
+      event.preventDefault();
+      return false;
     }
+  }
 }
 

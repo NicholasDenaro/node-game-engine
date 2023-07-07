@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { CardDeckEntity } from 'src/entities/card-deck-entity';
-import { GameView } from 'src/utils/game-view';
+import { GameView } from 'game-engine-angular';
 import { EngineStateService } from '../engine-state.service';
 
 @Component({

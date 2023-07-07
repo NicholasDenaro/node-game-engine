@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { EngineStateService } from 'src/app/engine-state.service';
 import { SolitaireRules } from 'src/entities/rules/solitaire-state';
 import { sizeCards } from 'src/utils/card-sizer';
-import { GameView } from 'src/utils/game-view';
+import { GameView } from 'game-engine-angular';
 
 @Component({
   selector: 'app-klondike',

@@ -1,12 +1,13 @@
 {
   "name": "game-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "type": "module",
-  "main": "dist/index.js",
-  "typings": "dist/index.js",
+  "main": "index.js",
+  "typings": "index.js",
   "scripts": {
-    "build": "tsc --declaration"
+    "build": "tsc --declaration",
+    "pack": "npm run build && del dist\\game-engine-* && cd dist && npm pack"
   },
   "author": "Nicholas Denaro",
   "license": "MIT",
@@ -16,7 +17,7 @@
   "exports": {
     ".": {
       "browser": {
-        "default": "./dist/index.js"
+        "default": "./index.js"
       }
     }
   }

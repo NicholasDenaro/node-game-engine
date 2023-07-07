@@ -8,8 +8,7 @@ import { Holdable, Holder } from 'src/entities/holdable';
 import { CardGameRules, GameRules } from 'src/entities/rules/game-rules';
 import { SolitaireRules } from 'src/entities/rules/solitaire-state';
 import { SpiderRules } from 'src/entities/rules/spider-state';
-import { AngularEntity } from 'src/utils/angular-entity';
-import { AngularView } from 'src/utils/angular-view';
+import { AngularEntity, AngularView } from 'game-engine-angular';
 import { sizeCards } from 'src/utils/card-sizer';
 import { ObserverEngine } from 'src/utils/observer-engine';
 

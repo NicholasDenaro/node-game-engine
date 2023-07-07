@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, NgZone, OnInit } from '@angular/co
 import { EngineStateService } from 'src/app/engine-state.service';
 import { SpiderRules } from 'src/entities/rules/spider-state';
 import { sizeCards } from 'src/utils/card-sizer';
-import { GameView } from 'src/utils/game-view';
+import { GameView } from 'game-engine-angular';
 
 @Component({
   selector: 'app-spider',

@@ -1,12 +1,12 @@
-import { Directive, Input, ViewContainerRef } from '@angular/core';
+// import { Directive, Input, ViewContainerRef } from '@angular/core';
 
-@Directive({
-  selector: '[view]'
-})
-export class ViewDirective {
-  @Input() public view: string = '';
+// @Directive({
+//   selector: '[view]'
+// })
+// export class ViewDirective {
+//   @Input() public view: string = '';
 
-  constructor(public vcr: ViewContainerRef) {
-  }
+//   constructor(public vcr: ViewContainerRef) {
+//   }
 
-}
+// }

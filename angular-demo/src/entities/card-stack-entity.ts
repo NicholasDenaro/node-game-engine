@@ -1,6 +1,6 @@
+import { AngularEntity, EntitySaveData } from "game-engine-angular";
 import { CardStackComponent } from "src/app/card-stack/card-stack.component";
 import { ObserverEngine } from "src/utils/observer-engine";
-import { AngularEntity, EntitySaveData } from "../utils/angular-entity";
 import { CardEntity } from "./card-entity";
 import { Holdable } from "./holdable";
 

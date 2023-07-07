@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostBinding, OnInit } from '@angular/core';
 import { CardEntity } from 'src/entities/card-entity';
-import { GameView } from 'src/utils/game-view';
+import { GameView } from 'game-engine-angular';
 import { EngineStateService } from '../engine-state.service';
 
 @Component({
