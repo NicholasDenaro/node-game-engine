@@ -18,6 +18,7 @@ import { View } from "./src/view";
 import { ModelEntity } from "./src/impls/model-entity";
 import { ModelPainter } from "./src/impls/model-painter";
 import { Model } from "./src/impls/model";
+import { GamepadController } from "./src/impls/gamepad-controller";
 
 export {
   Engine,
@@ -31,6 +32,7 @@ export {
   ControllerState,
   KeyboardController,
   MouseController,
+  GamepadController,
   ControllerBinding,
   Painter,
   Painter2D,

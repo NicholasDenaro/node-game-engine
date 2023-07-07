@@ -1,4 +1,4 @@
-import { Scene, Sprite, SpriteEntity, SpritePainter } from "game-engine";
+import { Scene, Sound, Sprite, SpriteEntity, SpritePainter, ControllerState } from "game-engine";
 
 export class Player extends SpriteEntity {
   constructor() {
@@ -6,5 +6,8 @@ export class Player extends SpriteEntity {
   }
 
   tick(scene: Scene): Promise<void> | void {
+    if (scene.isControl('button1', ControllerState.Press)) {
+      Sound.Sounds['start'].play();
+    }
   }
 }

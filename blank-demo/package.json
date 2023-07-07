@@ -6,7 +6,7 @@
   "scripts": {
     "pack": "del /q /s 1>nul dist && webpack --config webpack.config.js && copy src\\index.html dist\\index.html",
     "start": "npm run pack && start ./dist/index.html",
-    "reload-engine": "copy ..\\engine\\dist\\game-engine-* .\\ && npm uninstall game-engine && npm install game-engine-1.0.1.tgz",
+    "reload-engine": "copy ..\\engine\\dist\\game-engine-* .\\ && npm uninstall game-engine && npm install game-engine-0.1.2.tgz",
     "full-reload": "npm run reload-engine && npm run pack && npm run start"
   },
   "author": "Nicholas Denaro",
@@ -19,6 +19,6 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "game-engine": "file:game-engine-1.0.1.tgz"
+    "game-engine": "file:game-engine-0.1.2.tgz"
   }
 }

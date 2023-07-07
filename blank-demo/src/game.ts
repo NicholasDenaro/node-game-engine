@@ -1,4 +1,4 @@
-import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, KeyboardController, Scene, MouseController, Sprite, Sound } from 'game-engine';
+import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, GamepadController, KeyboardController, Scene, MouseController, Sprite, Sound } from 'game-engine';
 import { Player } from './player';
 
 const screenWidth = 240;
@@ -20,6 +20,7 @@ async function init() {
   const scene = new Scene(view);
   scene.addController(new KeyboardController(keyMap));
   scene.addController(new MouseController(mouseMap));
+  scene.addController(new GamepadController(gamepadMap));
   const scenePause = new Scene(view);
 
   engine.addScene('main', scene);
@@ -67,6 +68,33 @@ const mouseMap = [
   {
     binding: new ControllerBinding<{ x: number, y: number, dx: number, dy: number }>('interact'),
     buttons: [0],
+  }
+];
+
+const gamepadMap = [
+  {
+    binding: new ControllerBinding<{value: number}>('button1'),
+    buttons: [
+      { type: 'buttons', index: 0 },
+    ],
+  },
+  {
+    binding: new ControllerBinding<{ value: number }>('button2'),
+    buttons: [
+      { type: 'buttons', index: 1 },
+    ],
+  },
+  {
+    binding: new ControllerBinding<{ value: number }>('axis1'),
+    buttons: [
+      { type: 'axes', index: 0 },
+    ],
+  },
+  {
+    binding: new ControllerBinding<{ value: number }>('axis2'),
+    buttons: [
+      { type: 'axes', index: 1 },
+    ],
   }
 ];
 
