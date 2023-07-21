@@ -105,3 +105,5 @@ dist
 
 # Other files
 angular-demo/src/environments/environment.production.ts
+
+assets/premade

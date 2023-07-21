@@ -6,6 +6,7 @@ export abstract class Engine {
   static readonly constructors: { [key: string]: (args: any) => Entity } = {};
 
   static readonly entities: { [key: EntityID]: Entity } = {};
+  protected readonly actions: { [key: string]: () => void } = {};
 
   protected isRunning: boolean = false;
   protected isTick: boolean = false;
@@ -14,6 +15,22 @@ export abstract class Engine {
   protected sceneActivateBuffer = new Array<{ key: string; activate: boolean; }>;
 
   protected scenes: { [key: string]: Scene; } = {};
+
+  addAction(key: string, action: () => void) {
+    this.actions[key] = action;
+  }
+
+  removeAction(key: string) {
+    delete this.actions[key];
+  }
+
+  addEntity(sceneKey: string, entity: Entity) {
+    this.scenes[sceneKey]?.addEntity(entity);
+  }
+
+  removeEntity(sceneKey: string, entity: Entity) {
+    this.scenes[sceneKey]?.removeEntity(entity);
+  }
 
   addScene(key: string, scene: Scene): void {
     if (this.isRunning && this.isTick) {
@@ -56,6 +73,10 @@ export abstract class Engine {
     this.activateScene(scene);
   }
 
+  getScene(sceneKey: string) {
+    return this.scenes[sceneKey];
+  }
+
   abstract start(): Promise<void> | void;
   abstract stop(): Promise<void> | void;
 
@@ -81,6 +102,10 @@ export abstract class Engine {
     })
 
     this.isTick = true;
+
+    Object.values(this.actions).forEach(action => {
+      action();
+    })
     
     const keys = Object.entries(this.scenes).filter(val => val[1].isActivated()).map(val => val[0]);
     for (let i = 0; i < keys.length; i++) {

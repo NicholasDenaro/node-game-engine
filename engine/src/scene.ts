@@ -24,8 +24,9 @@ export class Scene implements CanActivate {
   public entitiesByType<TType extends Entity>(constructor: new (...args: any[]) => TType): TType[] {
     return <TType[]>this.entitiesSlice(entity => entity instanceof constructor);
   }
-  private entityAddBuffer = new Array<Entity>();
-  private entityRemoveBuffer = new Array<Entity>();
+  // private entityAddBuffer = new Array<Entity>();
+  // private entityRemoveBuffer = new Array<Entity>();
+  private entityActionBuffer = new Array<{add: boolean, entity: Entity}>();
   private controllers = new Array<Controller>();
 
   private isActive = false;
@@ -89,19 +90,27 @@ export class Scene implements CanActivate {
   }
 
   addEntity(entity: Entity) {
+    if (this.entities.indexOf(entity) != -1) {
+      return;
+    }
+    
     if (this.isActive) {
-      this.entityAddBuffer.push(entity);
+      this.entityActionBuffer.push({add: true, entity});
     } else {
       this.entities.push(entity);
     }
   }
 
   removeEntity(entity: Entity) {
-    if (this.isActive) {
-      this.entityRemoveBuffer.push(entity);
-    } else {
-      this.entities.splice(this.entities.indexOf(entity), 1);
+    if (this.entities.indexOf(entity) == -1) {
+      return;
     }
+
+    if (this.isActive) {
+      this.entityActionBuffer.push({ add: false, entity });
+    } else {
+        this.entities.splice(this.entities.indexOf(entity), 1);
+      }
   }
 
   async tick(): Promise<void> {
@@ -110,14 +119,25 @@ export class Scene implements CanActivate {
       return;
     }
 
-    const entitiesToAdd = this.entityAddBuffer.splice(0, this.entityAddBuffer.length);
-    entitiesToAdd.forEach(entity => {
-      this.entities.push(entity);
-    });
-    const entitiesToRemove = this.entityRemoveBuffer.splice(0, this.entityRemoveBuffer.length);
-    entitiesToRemove.forEach(entity => {
-      this.entities.splice(this.entities.indexOf(entity), 1);
-    });
+    // const entitiesToAdd = this.entityAddBuffer.splice(0, this.entityAddBuffer.length);
+    // entitiesToAdd.forEach(entity => {
+    //   this.entities.push(entity);
+    // });
+    // const entitiesToRemove = this.entityRemoveBuffer.splice(0, this.entityRemoveBuffer.length);
+    // entitiesToRemove.forEach(entity => {
+    //   this.entities.splice(this.entities.indexOf(entity), 1);
+    // });
+
+    const entitiesToAction = this.entityActionBuffer.splice(0, this.entityActionBuffer.length);
+    entitiesToAction.forEach(action => {
+      if (action.add) {
+        this.entities.push(action.entity);
+      } else {
+        if (this.entities.indexOf(action.entity) != -1) {
+          this.entities.splice(this.entities.indexOf(action.entity), 1);
+        }
+      }
+    })
 
     for (let i = 0; i < this.controllers.length; i++) {
       await this.controllers[i].tick();

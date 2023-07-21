@@ -20,10 +20,14 @@ export class GamepadController implements Controller {
     }
     addEventListener('gamepadconnected', evt => {
       const event = <GamepadEvent>evt;
+      console.log('controller connected');
+      console.log(event);
       this.gamepads[event.gamepad.index] = event.gamepad;
     });
     addEventListener('gamepaddisconnected', evt => {
       const event = <GamepadEvent>evt;
+      console.log('controller disconnected');
+      console.log(event);
       delete this.gamepads[event.gamepad.index];
     });
   }
@@ -53,35 +57,45 @@ export class GamepadController implements Controller {
 
   tick(): void | Promise<void> {
     for (let index in this.gamepads) {
-      const gamepad = this.gamepads[index];
+      let gamepad = this.gamepads[index];
+      const navGamePads = navigator.getGamepads ? navigator.getGamepads() : undefined;
+      if (navGamePads) {
+        gamepad = navGamePads[index];
+      }
       for (let control of Object.values(this.controls)) {
         let pressed = false;
         let val = 0;
         for (let button of control.buttons) {
           if (button.type == 'buttons') {
-            if (gamepad.buttons[button.index].pressed) {
+            if (gamepad.buttons[button.index]?.pressed) {
+              console.log('pressed');
               pressed = true;
+              val = gamepad.buttons[button.index].value;
+            } else if (!gamepad.buttons[button.index]){
+              console.log(button.index);
+              console.log(gamepad.buttons[button.index]);
             }
           } else if (button.type == 'axes') {
             if (Math.abs(gamepad.axes[button.index]) > 0.2) {
               pressed = true;
               val = gamepad.axes[button.index];
             }
+          } else {
+            console.log(`unknown button type: ${button.type}`);
           }
-          
         }
         if (pressed) {
-          control.binding.update(ControllerState.Press, {value: val});
+          control.binding?.update(ControllerState.Press, {value: val});
         }
         if (!pressed) {
-          control.binding.update(ControllerState.Release, { value: val });
+          control.binding?.update(ControllerState.Release, { value: val });
         }
       }
     }
 
     const keys = Object.keys(this.controls);
     for (let i = 0; i < keys.length; i++) {
-      this.controls[keys[i]]?.binding.tick();
+      this.controls[keys[i]]?.binding?.tick();
     }
   }
 }

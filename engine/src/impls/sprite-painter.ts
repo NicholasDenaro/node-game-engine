@@ -26,6 +26,13 @@ export class SpritePainter extends Painter2D {
     this.options.spriteOffsetY = this.options.spriteOffsetY || 0;
   }
 
+  setSprite(img: Sprite) {
+    this.sprite = img;
+    this.options = this.sprite?.getOptions() || this.options;
+    this.options.spriteOffsetX = this.options.spriteOffsetX || 0;
+    this.options.spriteOffsetY = this.options.spriteOffsetY || 0;
+  }
+
   override paint(ctx: CanvasRenderingContext2D): void {
     if (this.sprite) {
       const entity = Engine.entities[this.eid] as SpriteEntity;

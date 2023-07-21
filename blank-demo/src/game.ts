@@ -22,6 +22,7 @@ async function init() {
   scene.addController(new MouseController(mouseMap));
   scene.addController(new GamepadController(gamepadMap));
   const scenePause = new Scene(view);
+  view.setOffset(-5, -5);
 
   engine.addScene('main', scene);
   engine.addScene('pause', scenePause);

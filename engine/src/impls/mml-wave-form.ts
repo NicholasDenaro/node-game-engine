@@ -68,7 +68,7 @@ export class MMLWaveForm extends Sound {
     
   }
 
-  override play(): { stop: () => void } {
+  override play(): { stop: () => void, volume: (val: number) => void } {
     const stops: AudioBufferSourceNode[] = [];
     this.contexts.forEach(aud => {
       const source = aud.audCtx.createBufferSource();
@@ -79,7 +79,8 @@ export class MMLWaveForm extends Sound {
     });
 
     const stopFunc = {
-      stop: () => stops.forEach(stop => stop.stop(0))
+      stop: () => stops.forEach(stop => stop.stop(0)),
+      volume: (val: number) => {}
     };
 
     console.log(stopFunc);

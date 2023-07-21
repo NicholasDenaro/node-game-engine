@@ -29,6 +29,7 @@ export class Canvas3DView implements View {
     }
 
     this.canvas3D = document.createElement('canvas');
+    this.canvas3D.style.display = 'block';
     this.canvas3D.width = width * this.scale;
     this.canvas3D.height = height * this.scale;
     this.canvas3D.style.width = `${this.canvas3D.width * 96 / this.dpi}px`;
@@ -39,6 +40,7 @@ export class Canvas3DView implements View {
     this.setupPrograms();
 
     this.canvas = document.createElement('canvas');
+    this.canvas.style.display = 'block';
     this.canvas.width = width * this.scale;
     this.canvas.height = height * this.scale;
     this.canvas.style.width = `${this.canvas.width * 96 / this.dpi}px`;
