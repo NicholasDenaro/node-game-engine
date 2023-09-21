@@ -1,15 +1,15 @@
-import { CanActivate } from "./can-activate";
-import { Controller, ControllerState } from "./controller";
-import { Engine } from "./engine";
-import { Entity } from "./entity";
-import { Canvas2DView } from "./impls/canvas2D-view";
-import { Canvas3DView } from "./impls/canvas3D-view";
-import { MouseController } from "./impls/mouse-controller";
-import { View } from "./view";
+import { CanActivate } from "./can-activate.js";
+import { Controller, ControllerState } from "./controller.js";
+import { Engine } from "./engine.js";
+import { Entity } from "./entity.js";
+import { Canvas2DView } from "./impls/canvas2D-view.js";
+import { Canvas3DView } from "./impls/canvas3D-view.js";
+import { MouseController } from "./impls/mouse-controller.js";
+import { View } from "./view.js";
 
 export class Scene implements CanActivate {
 
-  constructor(private view: View) {
+  constructor(private engine: Engine, private view: View) {
 
   }
 
@@ -111,6 +111,11 @@ export class Scene implements CanActivate {
     } else {
         this.entities.splice(this.entities.indexOf(entity), 1);
       }
+  }
+
+  moveEntity(entity: Entity, sceneKey: string) {
+    this.removeEntity(entity);
+    this.engine.addEntity(sceneKey, entity);
   }
 
   async tick(): Promise<void> {

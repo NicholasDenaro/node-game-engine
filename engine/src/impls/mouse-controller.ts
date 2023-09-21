@@ -1,5 +1,5 @@
-import { Controller, ControllerBinding, ControllerState } from "../controller";
-import { View } from "../view";
+import { Controller, ControllerBinding, ControllerState } from "../controller.js";
+import { View } from "../view.js";
 
 export type MouseDetails = {x: number, y: number, dx: number, dy: number};
 

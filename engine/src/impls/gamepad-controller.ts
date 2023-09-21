@@ -1,4 +1,4 @@
-import { Controller, ControllerBinding, ControllerState } from "../controller";
+import { Controller, ControllerBinding, ControllerState } from "../controller.js";
 
 export type GamepadBinding = ControllerBinding<{value: number}>;
 

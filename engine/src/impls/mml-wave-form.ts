@@ -1,4 +1,4 @@
-import { Sound } from "../sound";
+import { Sound } from "../sound.js";
 
 export class MMLWaveForm extends Sound {
   private contexts: {audCtx: AudioContext, buf: AudioBuffer}[] = [];

@@ -7,21 +7,27 @@ const scale = 3;
 
 const engine: Engine = new FixedTickEngine(60);
 
-const spriteAssets = require.context('../assets/', false, /\.png$/);
+const spriteAssets = require.context('../assets/', true, /\.png$/);
+const wavAssets = require.context('../assets/', true, /\.wav$/);
+
+if (wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav')) {
+  new Sound('start', wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav'));
+}
+
 new Sprite('buddy', spriteAssets('./buddy.png'), { spriteWidth: 64, spriteHeight: 96 });
-const wavAssets = require.context('../assets/', false, /\.wav$/);
-new Sound('start', wavAssets('./GAME_MENU_SCORE_SFX001416.wav'));
 
 async function init() {
 
   await Sprite.waitForLoad();
 
+  await Sound.waitForLoad();
+
   const view = new Canvas2DView(screenWidth, screenHeight, { scale: scale, bgColor: '#BBBBBB' });
-  const scene = new Scene(view);
+  const scene = new Scene(engine, view);
   scene.addController(new KeyboardController(keyMap));
   scene.addController(new MouseController(mouseMap));
   scene.addController(new GamepadController(gamepadMap));
-  const scenePause = new Scene(view);
+  const scenePause = new Scene(engine, view);
   view.setOffset(-5, -5);
 
   engine.addScene('main', scene);

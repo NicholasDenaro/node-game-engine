@@ -1,5 +1,5 @@
-import { Entity, EntityID } from "./entity";
-import { Scene } from "./scene";
+import { Entity, EntityID } from "./entity.js";
+import { Scene } from "./scene.js";
 
 export abstract class Engine {
 

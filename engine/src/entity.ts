@@ -1,7 +1,7 @@
-import { Engine } from "./engine";
-import { Painter } from "./painter";
-import { Scene } from "./scene";
-import { ticker } from "./ticker";
+import { Engine } from "./engine.js";
+import { Painter } from "./painter.js";
+import { Scene } from "./scene.js";
+import { ticker } from "./ticker.js";
 
 export type EntityID = number;
 

@@ -3,20 +3,23 @@
   "version": "1.0.0",
   "description": "",
   "main": "./src/game.ts",
+  "type": "module",
   "scripts": {
-    "pack": "del /q /s 1>nul dist && webpack --config webpack.config.js && copy src\\index.html dist\\index.html",
-    "start": "npm run pack && start ./dist/index.html",
+    "build-webpack": "game-engine-webpack --entry ./src/game.ts --assets png,wav,ttf,ogg,mp3",
+    "build-electron": "game-engine-electron --name Demo --width 720 --height 480",
     "reload-engine": "copy ..\\engine\\dist\\game-engine-* .\\ && npm uninstall game-engine && npm install game-engine-0.1.2.tgz",
-    "full-reload": "npm run reload-engine && npm run pack && npm run start"
+    "reload-packager": "copy ..\\game-engine-packager\\game-engine-packager-* .\\ && npm uninstall game-engine-packager && npm install --save-dev game-engine-packager-0.0.1.tgz",
+    "http-server": "http-server -c-1 -p 8080 ./dist/",
+    "start-web": "npm run build-webpack && start http://localhost:8080",
+    "start-electron": "npm run build-electron || start .\\dist-electron\\Demo-win32-x64\\Demo.exe"
   },
   "author": "Nicholas Denaro",
   "license": "MIT",
   "devDependencies": {
-    "@types/webpack-env": "^1.18.1",
     "file-loader": "^6.2.0",
-    "ts-loader": "^9.4.2",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "game-engine-packager": "file:game-engine-packager-0.0.1.tgz",
+    "http-server": "^14.1.1",
+    "ts-loader": "^9.4.2"
   },
   "dependencies": {
     "game-engine": "file:game-engine-0.1.2.tgz"

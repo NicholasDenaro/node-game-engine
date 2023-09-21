@@ -1,5 +1,5 @@
-import { Entity } from "../entity";
-import { SpritePainter } from "./sprite-painter";
+import { Entity } from "../entity.js";
+import { SpritePainter } from "./sprite-painter.js";
 
 export abstract class SpriteEntity extends Entity {
   imageIndex: number = 0;

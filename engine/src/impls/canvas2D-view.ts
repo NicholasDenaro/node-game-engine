@@ -1,8 +1,8 @@
-import { Entity } from "../entity";
-import { Painter } from "../painter";
-import { Rectangle } from "../utils/rectangle";
-import { View } from "../view";
-import { SpriteEntity } from "./sprite-entity";
+import { Entity } from "../entity.js";
+import { Painter } from "../painter.js";
+import { Rectangle } from "../utils/rectangle.js";
+import { View } from "../view.js";
+import { SpriteEntity } from "./sprite-entity.js";
 
 export class Canvas2DView implements View {
   private activated: boolean = false;
@@ -64,7 +64,7 @@ export class Canvas2DView implements View {
     this.offsetY = y;
   }
 
-  async draw(entities: Array<Entity>): Promise<void> {
+  draw(entities: Array<Entity>): void {
     this.ctx.clearRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
     this.ctx.fillStyle = this.bgColor;
     this.ctx.fillRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
@@ -76,8 +76,6 @@ export class Canvas2DView implements View {
       entity.painter.paint(this.ctx);
     }
     this.ctx.resetTransform();
-
-    return Promise.resolve();
   }
 
   entitySortFunction(a: Entity, b: Entity): number {

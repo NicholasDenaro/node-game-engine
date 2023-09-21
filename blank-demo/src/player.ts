@@ -7,7 +7,11 @@ export class Player extends SpriteEntity {
 
   tick(scene: Scene): Promise<void> | void {
     if (scene.isControl('button1', ControllerState.Press)) {
-      Sound.Sounds['start'].play();
+      Sound.Sounds['start']?.play();
+    }
+
+    if (scene.isControl('right', ControllerState.Down)) {
+      this.x++;
     }
   }
 }
