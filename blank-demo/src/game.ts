@@ -1,4 +1,4 @@
-import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, KeyboardController, Scene, MouseController, Sprite, Sound } from 'game-engine';
+import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, GamepadController, KeyboardController, Scene, MouseController, Sprite, Sound } from 'game-engine';
 import { Player } from './player';
 
 const screenWidth = 240;
@@ -7,20 +7,28 @@ const scale = 3;
 
 const engine: Engine = new FixedTickEngine(60);
 
-const spriteAssets = require.context('../assets/', false, /\.png$/);
+const spriteAssets = require.context('../assets/', true, /\.png$/);
+const wavAssets = require.context('../assets/', true, /\.wav$/);
+
+if (wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav')) {
+  new Sound('start', wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav'));
+}
+
 new Sprite('buddy', spriteAssets('./buddy.png'), { spriteWidth: 64, spriteHeight: 96 });
-const wavAssets = require.context('../assets/', false, /\.wav$/);
-new Sound('start', wavAssets('./GAME_MENU_SCORE_SFX001416.wav'));
 
 async function init() {
 
   await Sprite.waitForLoad();
 
+  await Sound.waitForLoad();
+
   const view = new Canvas2DView(screenWidth, screenHeight, { scale: scale, bgColor: '#BBBBBB' });
-  const scene = new Scene(view);
+  const scene = new Scene(engine, view);
   scene.addController(new KeyboardController(keyMap));
   scene.addController(new MouseController(mouseMap));
-  const scenePause = new Scene(view);
+  scene.addController(new GamepadController(gamepadMap));
+  const scenePause = new Scene(engine, view);
+  view.setOffset(-5, -5);
 
   engine.addScene('main', scene);
   engine.addScene('pause', scenePause);
@@ -67,6 +75,33 @@ const mouseMap = [
   {
     binding: new ControllerBinding<{ x: number, y: number, dx: number, dy: number }>('interact'),
     buttons: [0],
+  }
+];
+
+const gamepadMap = [
+  {
+    binding: new ControllerBinding<{value: number}>('button1'),
+    buttons: [
+      { type: 'buttons', index: 0 },
+    ],
+  },
+  {
+    binding: new ControllerBinding<{ value: number }>('button2'),
+    buttons: [
+      { type: 'buttons', index: 1 },
+    ],
+  },
+  {
+    binding: new ControllerBinding<{ value: number }>('axis1'),
+    buttons: [
+      { type: 'axes', index: 0 },
+    ],
+  },
+  {
+    binding: new ControllerBinding<{ value: number }>('axis2'),
+    buttons: [
+      { type: 'axes', index: 1 },
+    ],
   }
 ];
 

@@ -1,7 +1,7 @@
-import { Entity } from "../entity";
-import { Painter } from "../painter";
-import { Rectangle } from "../utils/rectangle";
-import { View } from "../view";
+import { Entity } from "../entity.js";
+import { Painter } from "../painter.js";
+import { Rectangle } from "../utils/rectangle.js";
+import { View } from "../view.js";
 
 export class Canvas3DView implements View {
   private activated: boolean = false;
@@ -29,6 +29,7 @@ export class Canvas3DView implements View {
     }
 
     this.canvas3D = document.createElement('canvas');
+    this.canvas3D.style.display = 'block';
     this.canvas3D.width = width * this.scale;
     this.canvas3D.height = height * this.scale;
     this.canvas3D.style.width = `${this.canvas3D.width * 96 / this.dpi}px`;
@@ -39,6 +40,7 @@ export class Canvas3DView implements View {
     this.setupPrograms();
 
     this.canvas = document.createElement('canvas');
+    this.canvas.style.display = 'block';
     this.canvas.width = width * this.scale;
     this.canvas.height = height * this.scale;
     this.canvas.style.width = `${this.canvas.width * 96 / this.dpi}px`;
@@ -173,7 +175,7 @@ export class Canvas3DView implements View {
     return new Rectangle(rect[0].x, rect[0].y, rect[0].width, rect[0].height);
   }
 
-  async draw(entities: Array<Entity>): Promise<void> {
+  draw(entities: Array<Entity>): void {
     this.canvas3D.style.top = `${this.canvas.getBoundingClientRect().top}px`;
     this.canvas3D.style.left = `${this.canvas.getBoundingClientRect().left}px`;
 
@@ -199,8 +201,6 @@ export class Canvas3DView implements View {
       entity.painter.paint(this.gfx, this.program, this.ctx);
     }
     this.ctx.resetTransform();
-
-    return Promise.resolve();
   }
 
   viewElement(): HTMLElement {

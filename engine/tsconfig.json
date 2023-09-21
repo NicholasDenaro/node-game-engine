@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "ES2022",
+        "module": "NodeNext",
         "target": "ES2022",
         "noImplicitAny": true,
         "removeComments": true,
@@ -8,7 +8,7 @@
         "sourceMap": true,
         "outDir": "dist",
         "esModuleInterop": false,
-        "moduleResolution": "node",
+        "moduleResolution": "NodeNext",
         "types": ["node"],
         "resolveJsonModule": true
     },

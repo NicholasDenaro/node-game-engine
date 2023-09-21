@@ -81,6 +81,7 @@ typings/
 # Nuxt.js build / generate output
 .nuxt
 dist
+dist-electron
 
 # Gatsby files
 .cache/
@@ -105,3 +106,8 @@ dist
 
 # Other files
 angular-demo/src/environments/environment.production.ts
+
+**/assets/premade/*
+
+**/GAME_MENU_SCORE_SFX001769.wav
+**/sfxR07.wav

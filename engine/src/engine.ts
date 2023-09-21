@@ -1,24 +1,43 @@
-import { Entity, EntityID } from "./entity";
-import { Scene } from "./scene";
+import { Entity, EntityID } from "./entity.js";
+import { Scene } from "./scene.js";
 
 export abstract class Engine {
 
   static readonly constructors: { [key: string]: (args: any) => Entity } = {};
 
   static readonly entities: { [key: EntityID]: Entity } = {};
+  protected readonly actions: { [key: string]: () => void } = {};
 
   protected isRunning: boolean = false;
+  protected isTick: boolean = false;
 
   protected sceneBuffer = new Array<{ key: string; scene: Scene; }>;
+  protected sceneActivateBuffer = new Array<{ key: string; activate: boolean; }>;
 
   protected scenes: { [key: string]: Scene; } = {};
 
+  addAction(key: string, action: () => void) {
+    this.actions[key] = action;
+  }
+
+  removeAction(key: string) {
+    delete this.actions[key];
+  }
+
+  addEntity(sceneKey: string, entity: Entity) {
+    this.scenes[sceneKey]?.addEntity(entity);
+  }
+
+  removeEntity(sceneKey: string, entity: Entity) {
+    this.scenes[sceneKey]?.removeEntity(entity);
+  }
+
   addScene(key: string, scene: Scene): void {
-    if (!this.isRunning) {
-      this.scenes[key] = scene;
+    if (this.isRunning && this.isTick) {
+      this.sceneBuffer.push({ key, scene });
     }
     else {
-      this.sceneBuffer.push({ key, scene });
+      this.scenes[key] = scene;
     }
   }
 
@@ -27,22 +46,35 @@ export abstract class Engine {
   }
 
   activateScene(scene: string) {
-    this.scenes[scene]?.activate();
+    if (this.isRunning && this.isTick) {
+      this.sceneActivateBuffer.push({ key: scene, activate: true });
+    } else {
+      this.scenes[scene]?.activate();
+    }
   }
 
   deactivateScene(scene: string) {
-    this.scenes[scene]?.deactivate();
+    if (this.isRunning && this.isTick) {
+      this.sceneActivateBuffer.push({key: scene, activate: false});
+    }
+    else {
+      this.scenes[scene]?.deactivate();
+    }
   }
 
   deactivateAllScenes() {
     for (let scene in this.scenes) {
-      this.scenes[scene]?.deactivate();
+      this.deactivateScene(scene);
     }
   }
 
   switchToScene(scene: string) {
     this.deactivateAllScenes();
     this.activateScene(scene);
+  }
+
+  getScene(sceneKey: string) {
+    return this.scenes[sceneKey];
   }
 
   abstract start(): Promise<void> | void;
@@ -61,10 +93,25 @@ export abstract class Engine {
       this.scenes[scene.key] = scene.scene;
     })
 
+    this.sceneActivateBuffer.forEach(scene => {
+      if (scene.activate) {
+        this.activateScene(scene.key);
+      } else {
+        this.deactivateScene(scene.key);
+      }
+    })
+
+    this.isTick = true;
+
+    Object.values(this.actions).forEach(action => {
+      action();
+    })
     
     const keys = Object.entries(this.scenes).filter(val => val[1].isActivated()).map(val => val[0]);
     for (let i = 0; i < keys.length; i++) {
       await this.scenes[keys[i]].tick();
     }
+
+    this.isTick = false;
   }
 }

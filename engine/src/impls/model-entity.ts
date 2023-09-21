@@ -1,5 +1,5 @@
-import { Entity } from "../entity";
-import { ModelPainter } from "./model-painter";
+import { Entity } from "../entity.js";
+import { ModelPainter } from "./model-painter.js";
 
 export abstract class ModelEntity extends Entity {
   imageIndex: number = 0;

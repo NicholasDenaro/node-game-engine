@@ -1,8 +1,8 @@
-import { Engine } from "../engine";
-import { Sprite } from "./sprite";
-import { Rectangle } from "../utils/rectangle";
-import { Painter3D } from "./canvas3D-view";
-import { SpriteEntity } from "./sprite-entity";
+import { Engine } from "../engine.js";
+import { Sprite } from "./sprite.js";
+import { Rectangle } from "../utils/rectangle.js";
+import { Painter3D } from "./canvas3D-view.js";
+import { SpriteEntity } from "./sprite-entity.js";
 
 export class ModelPainter extends Painter3D {
 
