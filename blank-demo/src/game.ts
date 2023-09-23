@@ -1,9 +1,25 @@
 import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, GamepadController, KeyboardController, Scene, MouseController, Sprite, Sound } from 'game-engine';
-import { Player } from './player';
+import { Player } from './player.js';
 
 const screenWidth = 240;
 const screenHeight = 160;
 const scale = 3;
+
+declare global {
+  interface Window { steam: {
+    send: (data: any) => void;
+    receive: ((data: any) => void)
+   }
+  }
+}
+
+window.steam?.receive((data: any) => {
+  console.log(`got data: ${data}`);
+});
+
+setTimeout(() => {
+  window.steam?.send('name');
+}, 2000);
 
 const engine: Engine = new FixedTickEngine(60);
 

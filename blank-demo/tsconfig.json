@@ -1,14 +1,15 @@
 {
     "compilerOptions": {
-        "module": "CommonJS",
+        "module": "NodeNext",
         "target": "ES2022",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "experimentalDecorators": true,
+        "moduleResolution": "NodeNext",
         "sourceMap": true,
-        "outDir": "dist"
+        "outDir": "build-web"
     },
     "include": ["src/**/*", "src/index.html"],
-    "exclude": ["node_modules", "**/*.spec.ts", "webpack.config.js.old"]
+    "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -8,6 +8,8 @@ export class KeyboardController implements Controller {
 
   private controls: { [binding: string]: KeyBinding } = {};
   private inputs: { [key: string]: KeyBinding } = {};
+  
+  private disabledKeys: string[] = [];
 
   constructor(keyMap: KeyBinding[]) {
     for (let i = 0; i < keyMap.length; i++) {
@@ -50,9 +52,21 @@ export class KeyboardController implements Controller {
     }
   }
 
+  public addDisabledKey(key: string) {
+    if (this.disabledKeys.indexOf(key) == -1) {
+      this.disabledKeys.push(key);
+    }
+  }
+
+  public removeDisabledKey(key: string) {
+    if (this.disabledKeys.indexOf(key) >= 0) {
+      this.disabledKeys.splice(this.disabledKeys.indexOf(key), 1);
+    }
+  }
+
   private onKeyDown(event: KeyboardEvent) {
     this.input(event.key)?.update(ControllerState.Press);
-    if (event.key != 'F12') {
+    if (this.disabledKeys.indexOf(event.key) >= 0) {
       event.preventDefault();
       return false;
     }
@@ -60,7 +74,7 @@ export class KeyboardController implements Controller {
 
   private onKeyUp(event: KeyboardEvent) {
     this.input(event.key)?.update(ControllerState.Release);
-    if (event.key != 'F12') {
+    if (this.disabledKeys.indexOf(event.key) >= 0) {
       event.preventDefault();
       return false;
     }
