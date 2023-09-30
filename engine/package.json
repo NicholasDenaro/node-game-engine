@@ -11,6 +11,9 @@
   },
   "author": "Nicholas Denaro",
   "license": "MIT",
+  "dependencies": {
+    "gl-matrix": "^3.4.3"
+  },
   "devDependencies": {
     "@types/node": "^18.14.2"
   },
