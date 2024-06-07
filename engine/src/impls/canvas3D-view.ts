@@ -39,7 +39,7 @@ export class Canvas3DView implements View {
   private bgColor3D: { r: number, g: number, b: number, a: number };
   private vertexShaderCode: string;
   private fragmentShaderCode: string;
-  private camera: Camera;
+  public camera: Camera;
   program: WebGLProgram;
 
   constructor(width: number, height: number, options: Canvas3DViewOptions) {

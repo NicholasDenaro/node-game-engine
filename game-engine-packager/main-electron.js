@@ -24,7 +24,7 @@ const createWindow = () => {
 
   const win = new BrowserWindow({
     width: Math.ceil(data.width / dpi),
-    height: Math.ceil(data.height / dpi) + 21,
+    height: Math.ceil(data.height / dpi),
     useContentSize: true,
     resizable: data.resizable,
     title: data.title,

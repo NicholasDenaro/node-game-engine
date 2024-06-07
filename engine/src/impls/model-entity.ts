@@ -5,10 +5,8 @@ export abstract class ModelEntity extends Entity {
   imageIndex: number = 0;
   flipHorizontal: boolean = false;
   flipVertical: boolean = false;
-  protected roll: number = 0;
-  protected pitch: number = 0;
-  protected yaw: number = 0;
-  protected scale: number = 1;
+  protected rotation: { roll: number, pitch: number, yaw: number } = {roll: 0, pitch: 0, yaw: 0};
+  protected scale: { x: number, y: number, z: number } = {x: 1, y: 1, z: 1};
   constructor(public readonly painter: ModelPainter, protected x: number = 0, protected y: number = 0, protected z: number = 0) {
     super(painter);
     this.painter.setEid(this.getId());
@@ -23,10 +21,10 @@ export abstract class ModelEntity extends Entity {
   }
 
   getRot3D(): { roll: number, pitch: number, yaw: number } {
-    return { roll: this.roll, pitch: this.pitch, yaw: this.yaw };
+    return { roll: this.rotation.roll, pitch: this.rotation.pitch, yaw: this.rotation.yaw };
   }
 
-  getScale(): number{
+  getScale(): { x: number, y: number, z: number } {
     return this.scale;
   }
 

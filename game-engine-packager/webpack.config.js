@@ -16,7 +16,7 @@ const config = env => {
         { test: /\.js?$/, type: 'javascript/auto', exclude: /node_modules|dist-web|dist-electron/ },
         { test: /\.js?$/, resolve: { fullySpecified: false }, exclude: /node_modules|dist-web|dist-electron/ },
         { test: assetRegex, type: 'asset/resource' },
-        { test: /\.(tmx)$/, type: 'asset/source' },
+        { test: /\.tmx$|\.tsx/, type: 'asset/resource' },
       ]
     },
     resolve: {

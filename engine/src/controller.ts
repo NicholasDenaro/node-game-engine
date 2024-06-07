@@ -74,4 +74,11 @@ export class ControllerBinding<T extends {}> {
   }
 }
 
-export enum ControllerState { Press, Held, Release, Unheld, Down, Up }
+export enum ControllerState {
+  Press,
+  Held,
+  Release,
+  Unheld,
+  Down,
+  Up
+}

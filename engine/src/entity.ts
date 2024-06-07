@@ -18,7 +18,23 @@ export abstract class Entity implements ticker {
     Engine.entities[this.id] = this;
   }
 
-  abstract tick(scene: Scene): Promise<void> | void;
+  abstract tick(engine: Engine, scene: Scene): Promise<void> | void;
+
+  pretick(engine: Engine, scene: Scene): Promise<void> | void {
+
+  }
+
+  posttick(engine: Engine, scene: Scene): Promise<void> | void {
+
+  }
+
+  add(scene: Scene): void {
+    
+  }
+
+  remove(scene: Scene): void {
+
+  }
 
   save(): {} {
     return {
