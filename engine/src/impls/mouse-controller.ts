@@ -11,7 +11,6 @@ export class MouseController implements Controller {
 
   private controls: { [binding: string]: ButtonBinding } = {};
   private inputs: { [key: number]: ButtonBinding } = {};
-  private boundView: View;
 
   constructor(keyMap: ButtonBinding[]) {
     for (let i = 0; i < keyMap.length; i++) {
@@ -39,10 +38,6 @@ export class MouseController implements Controller {
     }
 
     return this.binding(binding)?.is(state);
-  }
-
-  bindToView(view: View) {
-    this.boundView = view;
   }
 
   getDetails(binding: string): MouseDetails | null {
@@ -78,7 +73,6 @@ export class MouseController implements Controller {
   }
 
   private onMouseDown(event: MouseEvent) {
-    if (this.boundView && !this.boundView.hasElement(event.target)) return;
     this.input(event.button)?.update(ControllerState.Press, { x: event.x, y: event.y, dx: event.movementX, dy: event.movementY });
     if (!document.pointerLockElement) {
       event.preventDefault();
@@ -87,7 +81,6 @@ export class MouseController implements Controller {
   }
 
   private onMouseUp(event: MouseEvent) {
-    if (this.boundView && !this.boundView.hasElement(event.target)) return;
     this.input(event.button)?.update(ControllerState.Release, { x: event.x, y: event.y, dx: event.movementX, dy: event.movementY });
     if (!document.pointerLockElement) {
       event.preventDefault();
@@ -104,7 +97,6 @@ export class MouseController implements Controller {
       return;
     }
 
-    if (this.boundView && !this.boundView.hasElement(event.target)) return;
     Object.keys(this.controls).forEach(control => this.controls[control].binding.update(ControllerState.Unheld, { x: event.x, y: event.y, dx: event.movementX, dy: event.movementY }));
     this.moved = true;
     event.preventDefault();

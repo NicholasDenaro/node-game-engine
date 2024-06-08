@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { execute, getArg } from "./utils.js";
+import { execute, getArg, getFlag } from "./utils.js";
 import * as fs from 'fs';
 
 const name = getArg('--name') || 'Untitled';
@@ -9,19 +9,29 @@ const platform = getArg('--platform') || 'win32';
 
 const arch = getArg('--arch') || 'x64';
 
-const width = getArg('--width') || '100';
+const steam = getFlag('--steam');
 
-const height = getArg('--height') || '100';
+const firstRun = !fs.existsSync('dist-electron\\package.json');
 
+if (firstRun) {
+  await execute('mkdir .\\dist-electron');
+  await execute('mkdir .\\dist-electron\\content');
 
-console.log('cleaning dist-electron...');
-await execute(`npx rimraf --glob ./dist-electron/*`);
+  console.log('copying package-electron.json...');
+  await execute(`copy node_modules\\game-engine-packager\\package-electron.json .\\dist-electron\\package.json`);
 
-console.log('copying dist to dist-electron...');
-await execute(`copy .\\dist\\ .\\dist-electron\\`);
+  console.log('copying main-electron.js...');
+  await execute(`copy node_modules\\game-engine-packager\\main-electron.js .\\dist-electron\\`);
 
-console.log('copying package-electron.json...');
-await execute(`copy node_modules\\game-engine-packager\\package-electron.json .\\dist-electron\\package.json`);
+  console.log('copying electron-preload.js...');
+  await execute(`copy node_modules\\game-engine-packager\\electron-preload.js .\\dist-electron\\`);
+}
+
+console.log('cleaning dist-electron/content...');
+await execute(`npx rimraf --glob ./dist-electron/content/*`);
+
+console.log('copying dist-web to dist-electron/content...');
+await execute(`copy .\\dist-web\\ .\\dist-electron\\content\\`);
 
 console.log('setting electron package.json data...');
 let electronPackageData = JSON.parse(fs.readFileSync(`.\\dist-electron\\package.json`).toString());
@@ -32,22 +42,32 @@ electronPackageData['version'] = mainPackageData['version'] || 'Unknown';
 electronPackageData['author'] = mainPackageData['author'] || 'Unknown';
 electronPackageData['license'] = mainPackageData['license'] || 'Unknown';
 
+if (!steam) {
+  delete electronPackageData['dependencies']['steamworks.js'];
+}
+
 fs.writeFileSync(`.\\dist-electron\\package.json`, JSON.stringify(electronPackageData, null, 2));
 
-console.log('copying main-electron.js...');
-await execute(`copy node_modules\\game-engine-packager\\main-electron.js .\\dist-electron\\`);
-
-console.log('installing electron...');
+console.log('running npm install for dist-electron/ ...');
 await execute(`cd dist-electron && npm install`);
 
-console.log('setting window data...');
-let mainData = fs.readFileSync(`.\\dist-electron\\main-electron.js`).toString();
+if (fs.existsSync('.\\window.json')) {
+  console.log('copying window.json...');
+  await execute(`copy .\\window.json .\\dist-electron\\`);
+}
 
-mainData = mainData.replace('data.width', width);
-mainData = mainData.replace('data.height', height);
-mainData = mainData.replace('data.title', `'${name}'`);
+if (steam) {
+  if (!fs.existsSync('steam-integrations.js')) {
+    console.log('copying initial steam-integrations.js...');
+    await execute(`copy node_modules\\game-engine-packager\\steam-integrations.js .\\steam-integrations.js`);
+  }
 
-fs.writeFileSync(`.\\dist-electron\\main-electron.js`, mainData);
+  console.log('copying steam-integrations.js...');
+  await execute(`copy .\\steam-integrations.js .\\dist-electron\\`);
+}
+
+console.log('cleaning dist-electron/dist...');
+await execute(`npx rimraf --glob ./dist-electron/dist/*`);
 
 console.log('running electron-packager...');
-await execute(`cd dist-electron && npx electron-packager . \"${name}\" --override --platform=${platform} --arch=${arch}`);
+await execute(`cd dist-electron && npx electron-packager . \"${name}\" --override --platform=${platform} --arch=${arch} --out=dist`);

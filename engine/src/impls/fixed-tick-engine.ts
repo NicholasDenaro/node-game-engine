@@ -4,6 +4,7 @@ export class FixedTickEngine extends Engine {
 
   private tickCount = 0;
   private frameTime: number;
+  public playInBackground: boolean = false;
 
   constructor(private ticksPerSecond: number, logTicks: boolean = false) {
     super();
@@ -49,6 +50,10 @@ export class FixedTickEngine extends Engine {
 
     await new Promise<void>((resolve, reject) => {
       if (typeof window !== 'undefined') {
+        if (this.playInBackground && document.hidden) {
+          resolve();
+          return;
+        }
         window.requestAnimationFrame(async () => {
           await this.draw();
           resolve();

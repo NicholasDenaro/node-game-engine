@@ -1,12 +1,11 @@
 {
   "name": "game-engine-packager",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "type": "module",
   "scripts": {
     "build": "rimraf dist && tsc --declaration",
-    "pack": "npm pack",
-    "test": "node .\\dist\\webpack.js"
+    "pack": "npm pack"
   },
   "author": "Nicholas Denaro",
   "license": "MIT",
@@ -15,10 +14,11 @@
     "electron": "^25.4.0",
     "electron-packager": "^17.1.1",
     "file-loader": "^6.2.0",
+    "rimraf": "^5.0.1",
+    "steamworks.js": "^0.3.1",
     "ts-loader": "^9.4.2",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1",
-    "rimraf": "^5.0.1"
+    "webpack-cli": "^5.0.1"
   },
   "devDependencies": {
     "@types/node": "^18.14.2",
@@ -28,7 +28,9 @@
     "dist/**/*.js",
     "webpack.config.js",
     "package-electron.json",
-    "main-electron.js"
+    "main-electron.js",
+    "electron-preload.js",
+    "steam-integrations.js"
   ],
   "bin": {
     "game-engine-webpack": "./dist/webpack.js",

@@ -5,13 +5,27 @@ export abstract class ModelEntity extends Entity {
   imageIndex: number = 0;
   flipHorizontal: boolean = false;
   flipVertical: boolean = false;
-  constructor(public readonly painter: ModelPainter, protected x: number = 0, protected y: number = 0) {
+  protected rotation: { roll: number, pitch: number, yaw: number } = {roll: 0, pitch: 0, yaw: 0};
+  protected scale: { x: number, y: number, z: number } = {x: 1, y: 1, z: 1};
+  constructor(public readonly painter: ModelPainter, protected x: number = 0, protected y: number = 0, protected z: number = 0) {
     super(painter);
     this.painter.setEid(this.getId());
   }
 
   getPos(): { x: number, y: number } {
     return { x: this.x, y: this.y };
+  }
+
+  getPos3D(): { x: number, y: number, z: number } {
+    return { x: this.x, y: this.y, z: this.z };
+  }
+
+  getRot3D(): { roll: number, pitch: number, yaw: number } {
+    return { roll: this.rotation.roll, pitch: this.rotation.pitch, yaw: this.rotation.yaw };
+  }
+
+  getScale(): { x: number, y: number, z: number } {
+    return this.scale;
   }
 
   collision(other: ModelEntity): boolean {

@@ -1,4 +1,5 @@
 import { Entity } from "../entity.js";
+import { Rectangle } from "../utils/rectangle.js";
 import { SpritePainter } from "./sprite-painter.js";
 
 export abstract class SpriteEntity extends Entity {
@@ -8,6 +9,9 @@ export abstract class SpriteEntity extends Entity {
   flipVertical: boolean = false;
   scaleX: number = 1;
   scaleY: number = 1;
+  bounds?: Rectangle;
+  visible: boolean = true;
+  alpha: number = 1;
   constructor(public readonly painter: SpritePainter, protected x: number = 0, protected y: number = 0) {
     super(painter);
     this.painter.setEid(this.getId());
@@ -18,12 +22,15 @@ export abstract class SpriteEntity extends Entity {
   }
 
   collision(other: SpriteEntity): boolean {
-    return this.painter.rectangle().intersects(other.painter.rectangle());
+    const selfBounds = this.bounds || this.painter.rectangle();
+    const otherBounds = other.bounds || other.painter.rectangle();;
+
+    return selfBounds.intersects(otherBounds);
   }
 
-  spriteTransform(ctx: CanvasRenderingContext2D) {
+  spriteTransform(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D) {
     ctx.transform(this.flipHorizontal ? -this.scaleX : this.scaleX, 0, 0, this.flipVertical ? -this.scaleY : this.scaleY, this.flipHorizontal ? this.scaleX : 0, this.flipVertical ? this.scaleY : 0);
-    return { undo: () => ctx.transform(this.flipHorizontal ? -this.scaleX : this.scaleX, 0, 0, this.flipVertical ? -this.scaleY : this.scaleY, this.flipHorizontal ? this.scaleX : 0, this.flipVertical ? this.scaleY : 0)};
+    return { undo: () => ctx.transform(this.flipHorizontal ? -1 / this.scaleX : 1 / this.scaleX, 0, 0, this.flipVertical ? -1 / this.scaleY : 1 / this.scaleY, this.flipHorizontal ? 1 /this.scaleX : 0, this.flipVertical ? 1 /this.scaleY : 0)};
   }
 
   /**

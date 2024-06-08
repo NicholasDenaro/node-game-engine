@@ -64,6 +64,10 @@ export class Canvas2DView implements View {
     this.offsetY = y;
   }
 
+  getOffset(): {x: number, y: number} {
+    return {x: this.offsetX || 0, y: this.offsetY || 0};
+  }
+
   draw(entities: Array<Entity>): void {
     this.ctx.clearRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
     this.ctx.fillStyle = this.bgColor;
@@ -108,11 +112,13 @@ export class Canvas2DView implements View {
 }
 
 export class Painter2D implements Painter {
-  constructor(private callback: (args: CanvasRenderingContext2D) => void) {
+  constructor(private callback: (args: PainterContext) => void) {
 
   }
 
-  paint(args: CanvasRenderingContext2D): void {
+  paint(args: PainterContext): void {
     this.callback(args);
   };
 }
+
+export type PainterContext = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;

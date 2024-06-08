@@ -1,27 +1,31 @@
 {
   "name": "game",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "./src/game.ts",
+  "main": "./dist/game.js",
   "type": "module",
   "scripts": {
-    "build-webpack": "game-engine-webpack --entry ./src/game.ts --assets png,wav,ttf,ogg,mp3",
-    "build-electron": "game-engine-electron --name Demo --width 720 --height 480",
-    "reload-engine": "copy ..\\engine\\dist\\game-engine-* .\\ && npm uninstall game-engine && npm install game-engine-0.1.2.tgz",
-    "reload-packager": "copy ..\\game-engine-packager\\game-engine-packager-* .\\ && npm uninstall game-engine-packager && npm install --save-dev game-engine-packager-0.0.1.tgz",
-    "http-server": "http-server -c-1 -p 8080 ./dist/",
-    "start-web": "npm run build-webpack && start http://localhost:8080",
-    "start-electron": "npm run build-electron || start .\\dist-electron\\Demo-win32-x64\\Demo.exe"
+    "tsc-web": "rimraf build-web && tsc --declaration",
+    "build-webpack": "game-engine-webpack --entry ./build-web/game.js --assets png,wav,ttf,ogg,mp3",
+    "build-electron": "game-engine-electron --name Demo ",
+    "build-electron-steam": "game-engine-electron --name Demo --steam",
+    "reload-engine": "copy ..\\engine\\dist\\game-engine-* .\\ && npm uninstall game-engine && npm install game-engine-0.1.32.tgz",
+    "reload-packager": "copy ..\\game-engine-packager\\game-engine-packager-* .\\ && npm uninstall game-engine-packager && npm install --save-dev game-engine-packager-0.0.3.tgz",
+    "http-server": "http-server -c-1 -p 8080 ./dist-web/",
+    "start-web": "start http://localhost:8080",
+    "start-electron": "cd .\\dist-electron\\dist\\Demo-win32-x64 && .\\Demo.exe",
+    "full-webpack": "npm run tsc-web && npm run build-webpack",
+    "full-electron": "npm run full-webpack && npm run build-electron"
   },
   "author": "Nicholas Denaro",
   "license": "MIT",
   "devDependencies": {
     "file-loader": "^6.2.0",
-    "game-engine-packager": "file:game-engine-packager-0.0.1.tgz",
-    "http-server": "^14.1.1",
-    "ts-loader": "^9.4.2"
+    "game-engine-packager": "file:game-engine-packager-0.0.3.tgz",
+    "http-server": "^14.1.1"
   },
   "dependencies": {
-    "game-engine": "file:game-engine-0.1.2.tgz"
+    "game-engine": "file:game-engine-0.1.32.tgz",
+    "gl-matrix": "^3.4.3"
   }
 }

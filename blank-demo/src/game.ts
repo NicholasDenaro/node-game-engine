@@ -1,13 +1,30 @@
-import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, GamepadController, KeyboardController, Scene, MouseController, Sprite, Sound } from 'game-engine';
-import { Player } from './player';
+import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, GamepadController, KeyboardController, Scene, MouseController, Sprite, Sound, ControllerState } from 'game-engine';
+import { Player } from './player.js';
 
 const screenWidth = 240;
 const screenHeight = 160;
 const scale = 3;
+export const FPS = 60;
 
-const engine: Engine = new FixedTickEngine(60);
+declare global {
+  interface Window { steam: {
+    send: (data: any) => void;
+    receive: ((data: any) => void)
+   }
+  }
+}
 
-const spriteAssets = require.context('../assets/', true, /\.png$/);
+window.steam?.receive((data: any) => {
+  console.log(`got data: ${data}`);
+});
+
+setTimeout(() => {
+  window.steam?.send('name');
+}, 2000);
+
+const engine: Engine = new FixedTickEngine(FPS);
+
+export const spriteAssets = require.context('../assets/', true, /\.png$/);
 const wavAssets = require.context('../assets/', true, /\.wav$/);
 
 if (wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav')) {
@@ -15,6 +32,8 @@ if (wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav')) {
 }
 
 new Sprite('buddy', spriteAssets('./buddy.png'), { spriteWidth: 64, spriteHeight: 96 });
+new Sprite('button', spriteAssets('./button.png'), { spriteWidth: 64, spriteHeight: 64 });
+new Sprite('bark', spriteAssets('./bark.png'), { spriteWidth: 64, spriteHeight: 64 });
 
 async function init() {
 
@@ -22,18 +41,32 @@ async function init() {
 
   await Sound.waitForLoad();
 
-  const view = new Canvas2DView(screenWidth, screenHeight, { scale: scale, bgColor: '#BBBBBB' });
-  const scene = new Scene(engine, view);
-  scene.addController(new KeyboardController(keyMap));
-  scene.addController(new MouseController(mouseMap));
-  scene.addController(new GamepadController(gamepadMap));
-  const scenePause = new Scene(engine, view);
-  view.setOffset(-5, -5);
+  engine.addController(new KeyboardController(keyMap));
+  engine.addController(new MouseController(mouseMap));
+  engine.addController(new GamepadController(gamepadMap));
 
-  engine.addScene('main', scene);
-  engine.addScene('pause', scenePause);
+  const view = new Canvas2DView(screenWidth, screenHeight, { scale: scale, bgColor: '#BBBBBB' });
+  const scene = new Scene('main', view);
+  const scenePause = new Scene('pause', view);
+
+  engine.addScene(scene);
+  engine.addScene(scenePause);
 
   scene.addEntity(new Player());
+
+  engine.addScene(scene);
+
+  engine.addScene(scenePause);
+
+  engine.addActionPre('pause', () => {
+    if (engine.isControl('action', ControllerState.Press) || engine.isControl('interact1', ControllerState.Press)) {
+      if (engine.getActivatedScenes().some(scene => scene.key === 'main')) {
+        engine.switchToScene('pause');
+      } else {
+        engine.switchToScene('main');
+      }
+    }
+  });
 
   engine.switchToScene('main');
 
@@ -62,6 +95,14 @@ const keyMap = [
     keys: ['ArrowDown', 's', 'S'],
   },
   {
+    binding: new ControllerBinding<undefined>('leftTurn'),
+    keys: ['q', 'Q'],
+  },
+  {
+    binding: new ControllerBinding<undefined>('rightTurn'),
+    keys: ['e', 'E'],
+  },
+  {
     binding: new ControllerBinding<undefined>('run'),
     keys: ['Shift'],
   },
@@ -73,8 +114,12 @@ const keyMap = [
 
 const mouseMap = [
   {
-    binding: new ControllerBinding<{ x: number, y: number, dx: number, dy: number }>('interact'),
+    binding: new ControllerBinding<{ x: number, y: number, dx: number, dy: number }>('interact1'),
     buttons: [0],
+  },
+  {
+    binding: new ControllerBinding<{ x: number, y: number, dx: number, dy: number }>('interact2'),
+    buttons: [2],
   }
 ];
 

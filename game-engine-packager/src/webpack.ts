@@ -16,11 +16,8 @@ if (!assets) {
   process.exit(1);
 }
 
-console.log('cleaning dist...');
-await execute(`npx rimraf --glob ./dist/*`);
-
 console.log('running webpack...');
 await execute(`npx webpack --config node_modules/game-engine-packager/webpack.config.js --entry ${entry} --env assets=${assets}`);
 
 console.log('copying index.html...');
-await execute('copy src\\index.html dist\\index.html');
+await execute('copy src\\index.html dist-web\\index.html');
