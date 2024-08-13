@@ -28,7 +28,7 @@ export const spriteAssets = require.context('../assets/', true, /\.png$/);
 const wavAssets = require.context('../assets/', true, /\.wav$/);
 
 if (wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav')) {
-  new Sound('start', wavAssets('./premade/GAME_MENU_SCORE_SFX001416.wav'));
+  new Sound('start', wavAssets('./premade/output/GAME_MENU_SCORE_SFX001416.ogg'));
 }
 
 new Sprite('buddy', spriteAssets('./buddy.png'), { spriteWidth: 64, spriteHeight: 96 });
