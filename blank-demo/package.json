@@ -15,7 +15,8 @@
     "start-web": "start http://localhost:8080",
     "start-electron": "cd .\\dist-electron\\dist\\Demo-win32-x64 && .\\Demo.exe",
     "full-webpack": "npm run tsc-web && npm run build-webpack",
-    "full-electron": "npm run full-webpack && npm run build-electron"
+    "full-electron": "npm run full-webpack && npm run build-electron",
+    "oggify": "node oggify.cjs"
   },
   "author": "Nicholas Denaro",
   "license": "MIT",
