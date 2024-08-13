@@ -1,7 +1,7 @@
 import { Controller, ControllerState } from "./controller.js";
 import { Entity, EntityID } from "./entity.js";
-import { Canvas2DView } from "./impls/canvas2D-view.js";
-import { Canvas3DView } from "./impls/canvas3D-view.js";
+import { Canvas2DView } from "./2D/canvas2D-view.js";
+import { Canvas3DView } from "./3D/canvas3D-view.js";
 import { Scene } from "./scene.js";
 import { Stopwatch } from './utils/stopwatch.js';
 import { View } from "./view.js";

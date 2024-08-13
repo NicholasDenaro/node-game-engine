@@ -4,9 +4,8 @@ import { Painter } from "../painter.js";
 import { Rectangle } from "../utils/rectangle.js";
 import { View } from "../view.js";
 import { ModelEntity } from "./model-entity.js";
-import { SpriteEntity } from "./sprite-entity.js";
-import { Sprite } from "./sprite.js";
-import { SpritePainter } from "./sprite-painter.js";
+import { SpriteEntity } from "../2D/sprite-entity.js";
+import { SpritePainter } from "../2D/sprite-painter.js";
 
 export type Camera = {
   yaw: number,
