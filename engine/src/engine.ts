@@ -3,6 +3,7 @@ import { Entity, EntityID } from "./entity.js";
 import { Canvas2DView } from "./impls/canvas2D-view.js";
 import { Canvas3DView } from "./impls/canvas3D-view.js";
 import { Scene } from "./scene.js";
+import { Stopwatch } from './utils/stopwatch.js';
 import { View } from "./view.js";
 
 export abstract class Engine {
@@ -15,6 +16,20 @@ export abstract class Engine {
 
   protected isRunning: boolean = false;
   protected isTick: boolean = false;
+
+  private fpsStopwatch: Stopwatch = new Stopwatch();
+  private frameCount: number = 0;
+  protected _FPS: number = 1;
+  public FPS(): number {
+    return this._FPS;
+  }
+
+  private tpsStopwatch: Stopwatch = new Stopwatch();
+  private tickCount: number = 0;
+  protected _TPS: number = 1;
+  public TPS(): number {
+    return this._TPS;
+  }
 
   protected sceneBuffer = new Array<{ key: string; scene: Scene; }>;
   protected sceneActivateBuffer = new Array<{ key: string; activate: boolean; }>;
@@ -149,13 +164,33 @@ export abstract class Engine {
     return Object.keys(this.scenes).filter(key => this.scenes[key].isActivated()).map(key => this.scenes[key]);
   }
 
-  abstract start(): Promise<void> | void;
-  abstract stop(): Promise<void> | void;
+  async start(): Promise<void> {
+    this.isRunning = true;
+    this.tpsStopwatch.start();
+    this.fpsStopwatch.start();
+    await this._start();
+  }
+  async stop(): Promise<void> {
+    this.isRunning = false;
+    this.tpsStopwatch.stop();
+    this.fpsStopwatch.stop();
+    await this._stop();
+  }
+
+  protected abstract _start(): Promise<void> | void;
+  protected abstract _stop(): Promise<void> | void;
 
   async draw(): Promise<void> {
     const keys = Object.keys(this.scenes);
     for (let i = 0; i < keys.length; i++) {
       await this.scenes[keys[i]].draw();
+    }
+
+    this.frameCount++;
+    if (this.fpsStopwatch.time() > 1000) {
+      this._FPS = this.frameCount;
+      this.fpsStopwatch.start();
+      this.frameCount = 0;
     }
   }
 
@@ -187,6 +222,13 @@ export abstract class Engine {
     }
 
     this.isTick = false;
+
+    this.tickCount++;
+    if (this.tpsStopwatch.time() > 1000) {
+      this._TPS = this.tickCount;
+      this.tpsStopwatch.start();
+      this.tickCount = 0;
+    }
   }
 
   flushSceneActivateBuffer(): void {
