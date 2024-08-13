@@ -2,32 +2,29 @@ import { Engine } from "../engine.js";
 
 export class FixedTickEngine extends Engine {
 
-  private tickCount = 0;
   private frameTime: number;
   public playInBackground: boolean = false;
 
   constructor(private ticksPerSecond: number, logTicks: boolean = false) {
     super();
+    this._FPS = ticksPerSecond;
+    this._TPS = ticksPerSecond;
     this.frameTime = 1000 / this.ticksPerSecond;
     console.log(`frameTime=${this.frameTime}`);
     if (logTicks) {
       setInterval(() => {
-        console.log(`ticks: ${this.tickCount}`);
+        console.log(`ticks: ${this.TPS()}`);
         const keys = Object.keys(this.scenes);
         for (let i = 0; i < keys.length; i++) {
-          this.scenes[keys[i]].debugInfo(this.tickCount);
+          this.scenes[keys[i]].debugInfo(this.TPS());
         }
-        this.tickCount = 0;
       }, 1000);
     }
   }
 
-  start(): Promise<void> {
-    this.isRunning = true;
+  _start():void {
     this.previousTime = performance.now(); // This disables fast-forward // or so I thought, but problems arise when tab is in background and then re-entered
     setTimeout(() => this.frames(), 1);
-
-    return new Promise(() => {});
   }
 
   private previousTime = 0;
@@ -67,12 +64,8 @@ export class FixedTickEngine extends Engine {
     scenesToAdd.forEach(sceneInfo => {
       this.scenes[sceneInfo.key] = sceneInfo.scene;
     });
-
-    this.tickCount++;
   }
 
-  stop(): Promise<void> {
-    this.isRunning = false;
-    return Promise.resolve();
+  _stop(): void {
   }
 }

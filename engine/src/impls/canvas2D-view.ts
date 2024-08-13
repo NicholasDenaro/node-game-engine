@@ -6,8 +6,8 @@ import { SpriteEntity } from "./sprite-entity.js";
 
 export class Canvas2DView implements View {
   private activated: boolean = false;
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
+  protected canvas: HTMLCanvasElement;
+  protected ctx: CanvasRenderingContext2D;
   private text: HTMLParagraphElement;
   private div: HTMLDivElement;
   public readonly scale: number;
@@ -26,13 +26,7 @@ export class Canvas2DView implements View {
     this.canvas.height = height * this.scale;
     this.canvas.style.display = 'block';
     this.canvas.style.width = `${this.canvas.width * 96 / this.dpi}px`;
-    this.ctx = this.canvas.getContext('2d') || {
-      canvas: HTMLCanvasElement,
-      getContextAttributes(): CanvasRenderingContext2DSettings {
-        return {
-        } as CanvasRenderingContext2DSettings;
-      }
-    } as unknown as CanvasRenderingContext2D;
+    this.ctx = this.canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
     this.text = document.createElement('p');
     this.text.innerText = '';

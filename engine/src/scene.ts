@@ -67,8 +67,11 @@ export class Scene implements CanActivate {
       if (this.entityActionBuffer.length > 0) {
         this.flushEntityActions();
       }
-      const removedEntity = this.entities.splice(this.entities.indexOf(entity), 1)[0];
-      removedEntity.remove(this);
+      const index = this.entities.indexOf(entity);
+      if (index > -1) {
+        const removedEntity = this.entities.splice(index, 1)[0];
+        removedEntity.remove(this);
+      }
     }
   }
 
