@@ -1,8 +1,8 @@
 import { Engine } from "../engine.js";
-import { Sprite } from "./sprite.js";
+import { Sprite } from "../2D/sprite.js";
 import { Rectangle } from "../utils/rectangle.js";
 import { Painter3D } from "./canvas3D-view.js";
-import { SpriteEntity } from "./sprite-entity.js";
+import { SpriteEntity } from "../2D/sprite-entity.js";
 import { Model } from "./model.js";
 import { ModelEntity } from "./model-entity.js";
 import { Rigging } from "./rigging.js";

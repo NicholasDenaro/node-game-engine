@@ -1,7 +1,7 @@
 import { Engine } from '../engine.js';
-import { Sprite } from '../impls/sprite.js';
-import { TileMapAnimated } from '../impls/tile-map-animated.js';
-import { TileMap } from '../impls/tile-map.js';
+import { Sprite } from '../2D/sprite.js';
+import { TileMapAnimated } from '../2D/tile-map-animated.js';
+import { TileMap } from '../2D/tile-map.js';
 import { Scene } from '../scene.js';
 import { View } from '../view.js';
 import { Rectangle } from './rectangle.js';
