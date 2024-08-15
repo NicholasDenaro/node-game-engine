@@ -53,6 +53,13 @@ export class Canvas2DView implements View {
     return new Rectangle(rect[0].x, rect[0].y, rect[0].width, rect[0].height);
   }
 
+  resize(width: number, height: number) {
+    this.canvas.width = width * this.scale;
+    this.canvas.height = height * this.scale;
+    this.canvas.style.width = `${this.canvas.width * 96 / this.dpi}px`;
+    this.ctx.imageSmoothingEnabled = false;
+  }
+
   setOffset(x: number, y: number) {
     this.offsetX = x;
     this.offsetY = y;
