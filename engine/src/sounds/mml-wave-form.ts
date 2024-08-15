@@ -2,12 +2,12 @@ import { Sound } from "../sound.js";
 
 export class MMLWaveForm extends Sound {
   private contexts: {audCtx: AudioContext, buf: AudioBuffer}[] = [];
-  constructor(name: string, mml: string[]) {
+  constructor(name: string, mml: string[], private waveFunction: ((tone: number, duration: number, i: number) => number)[] = undefined) {
     super(name, null);
 
     const matcher = new RegExp('(?<note>[a-grA-GR][+#-]?[0-9]*\\.?(&[a-grA-GR][+#-]?[0-9]*\\.?)*)|(?<octave>[<>]|o[1-8])|(?<length>l[0-9]+\\.?)|(?<tempo>t[0-9]+\\.?)', 'g');
     let matches;
-    mml.forEach(track => {
+    mml.forEach((track, trackIndex) => {
       matches = track.matchAll(matcher);
       let match;
       let octave = 4;
@@ -57,15 +57,25 @@ export class MMLWaveForm extends Sound {
       let index = 0;
       notes.forEach(note => {
         for (let i = 0; i < note.duration * 44100; i++) {
-          let t = i / 44100 * Math.PI * 2;
-          chData[index] = 0.6 * Math.sin(note.tone * t) * 0.05 * (1 - i / (note.duration * 44100));
-          chData[index] += 0.4 * Math.sin(2 * note.tone * t) * 0.05 * (1 - i / (note.duration * 44100));
-          chData[index] += chData[index] * chData[index] * chData[index];
+          chData[index] = this.getWave(trackIndex, note.tone, note.duration, i);
           index++;
         }
       });
     });
     
+  }
+
+  getWave(trackIndex: number, tone: number, duration: number, i: number): number {
+    if (this.waveFunction) {
+      return this.waveFunction[trackIndex](tone, duration, i);
+    }
+
+    let t = i / 44100 * Math.PI * 2;
+    let val = 0.6 * Math.sin(tone * t) * 0.05 * (1 - i / (duration * 44100));
+    val += 0.4 * Math.sin(2 * tone * t) * 0.05 * (1 - i / (duration * 44100));
+    val += val * val * val;
+
+    return val;
   }
 
   override play(): { stop: () => void, volume: (val: number) => void } {
