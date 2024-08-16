@@ -23,22 +23,24 @@ export class FixedTickEngine extends Engine {
   }
 
   _start():void {
-    this.previousTime = performance.now(); // This disables fast-forward // or so I thought, but problems arise when tab is in background and then re-entered
+    this.previousTime = performance.now();
     setTimeout(() => this.frames(), 1);
   }
 
+  private time: number;
   private previousTime = 0;
   private async frames(): Promise<void> {
     if (this.isRunning) {
       let left = this.frameTime - (performance.now() - this.previousTime);
-      if (left <= 0) {
+      while (left < 1) {
         if (this.isRunning) {
           await this.loop();
         }
         this.previousTime += this.frameTime;
+        left += this.frameTime;
       }
 
-      setTimeout(() => this.frames(), 1);
+      setTimeout(() => this.frames(), left ?? 1);
     }
   }
 

@@ -6,7 +6,7 @@ import { SpriteEntity } from "./sprite-entity.js";
 
 export class SpritePainter extends Painter2D {
 
-  private eid: number;
+  protected eid: number;
   private sprite: Sprite;
   private directDraw: (ctx: PainterContext) => void;
 

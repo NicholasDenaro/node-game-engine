@@ -9,6 +9,7 @@ export { Sound } from "./src/sound.js";
 export { Canvas2DView, Painter2D, PainterContext } from "./src/2D/canvas2D-view.js";
 export { SpriteEntity } from "./src/2D/sprite-entity.js";
 export { SpritePainter } from "./src/2D/sprite-painter.js";
+export { LayeredSpritePainter } from "./src/2D/layered-sprite-painter.js";
 export { Sprite } from "./src/2D/sprite.js";
 export { TileMap } from "./src/2D/tile-map.js";
 export { TileMapAnimated } from "./src/2D/tile-map-animated.js";
