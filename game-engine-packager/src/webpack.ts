@@ -20,4 +20,9 @@ console.log('running webpack...');
 await execute(`npx webpack --config node_modules/game-engine-packager/webpack.config.js --entry ${entry} --env assets=${assets}`);
 
 console.log('copying index.html...');
-await execute('copy src\\index.html dist-web\\index.html');
+
+if (process.platform === 'win32') {
+  await execute('copy src\\index.html dist-web\\index.html');
+} else {
+  await execute('cp src/index.html dist-web/index.html');
+}

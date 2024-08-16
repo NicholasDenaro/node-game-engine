@@ -27,14 +27,17 @@ export class FixedTickEngine extends Engine {
     setTimeout(() => this.frames(), 1);
   }
 
+  private looped: boolean = false;
   private time: number;
   private previousTime = 0;
   private async frames(): Promise<void> {
     if (this.isRunning) {
       let left = this.frameTime - (performance.now() - this.previousTime);
+      this.looped = false;
       while (left < 1) {
         if (this.isRunning) {
           await this.loop();
+          this.looped = true;
         }
         this.previousTime += this.frameTime;
         left += this.frameTime;
@@ -47,16 +50,22 @@ export class FixedTickEngine extends Engine {
   private async loop(): Promise<void> {
     await this.tick();
 
-    await new Promise<void>((resolve, reject) => {
+    await new Promise<void>(async (resolve, reject) => {
       if (typeof window !== 'undefined') {
         if (this.playInBackground && document.hidden) {
           resolve();
           return;
         }
-        window.requestAnimationFrame(async () => {
+        if (!this.looped) {
+          window.requestAnimationFrame(async () => {
+            await this.draw();
+            resolve();
+          });
+        } else {
           await this.draw();
           resolve();
-        });
+        }
+        
       } else {
         resolve();
       }
