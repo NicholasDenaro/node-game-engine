@@ -1,4 +1,4 @@
-import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, KeyboardController, Scene, ControllerState, SpriteEntity, SpritePainter, MouseController, Entity, Sprite, Sound, MMLWaveForm, PainterContext } from 'game-engine';
+import { Canvas2DView, ControllerBinding, Engine, FixedTickEngine, KeyboardController, Scene, ControllerState, SpriteEntity, SpritePainter, MouseController, Entity, Sprite, Sound, MMLWaveForm, PainterContext, Stopwatch } from 'game-engine';
 
 const screenWidth = 240;
 const screenHeight = 160;
@@ -73,7 +73,7 @@ function smoothwaveform(func: (phase: number) => number): (tone: number, duratio
   }
 }
 
-const engine: Engine = new FixedTickEngine(144);
+const engine: Engine = new FixedTickEngine(144, true);
 
 class Wall extends SpriteEntity {
 

@@ -2,6 +2,8 @@ export class Sound {
   static Sounds: { [key: string]: Sound } = {};
   static Contexts: { [key: string]: {context: AudioContext, buffer?: AudioBuffer, ready: boolean} } = {};
 
+  private volume: number = 1;
+
   constructor(private name: string, private path: string, private loop: boolean = false) {
     Sound.Sounds[name] = this;
     Sound.Contexts[name] = { context: new AudioContext(), ready: false };
@@ -26,6 +28,14 @@ export class Sound {
     return Sound.volume;
   }
 
+  setVolume(vol: number) {
+    this.volume = vol;
+  }
+
+  getVolume() {
+    return this.volume;
+  }
+
   static async waitForLoad() {
     await Promise.all(Object.values(Sound.Contexts).map(sound => new Promise<void>((resolve, reject) => {
       const interval = window.setInterval(() => {
@@ -43,7 +53,7 @@ export class Sound {
     }
 
     const gain = Sound.Contexts[this.name].context.createGain();
-    gain.gain.value = Sound.volume;
+    gain.gain.value = Sound.volume * this.volume;
     gain.connect(Sound.Contexts[this.name].context.destination);
 
     const source = Sound.Contexts[this.name].context.createBufferSource();
@@ -54,7 +64,7 @@ export class Sound {
 
     return {
       stop: () => source.stop(),
-      volume: (val) => gain.gain.value = val,
+      volume: (val) => gain.gain.value = Sound.volume * (this.volume = val),
     }
   }
 }
