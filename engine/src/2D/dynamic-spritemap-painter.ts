@@ -4,14 +4,30 @@ import { SpriteEntity } from './sprite-entity.js';
 import { SpritePainter } from './sprite-painter.js';
 import { Sprite } from './sprite.js';
 
-export class FixedSizeSpritemapPainter extends SpritePainter {
+export type DynamicSpritemapImage = { x: number, y: number, width: number, height: number, offsetX: number, offsetY: number }
+
+export class DynamicSpritemapPainter extends SpritePainter {
   private imageIndex: number = 0;
-  constructor(private mySprite: Sprite, private entity: () => SpriteEntity, private images: {x: number, y: number, width: number, height: number, offsetX: number, offsetY: number}[]) {
+  constructor(private mySprite: Sprite, private entity: () => SpriteEntity, private images: DynamicSpritemapImage[]) {
     super(mySprite);
   }
 
   setImage(index: number) {
     this.imageIndex = index;
+  }
+
+  paint(ctx: PainterContext) {
+    this.setEid(this.entity().getId());
+    super.paint(ctx);
+  }
+
+  setSprite(sprite: Sprite): void {
+    this.mySprite = sprite;
+    super.setSprite(sprite);
+  }
+
+  setImages(images: DynamicSpritemapImage[]) {
+    this.images = images;
   }
 
   paintAt(ctx: PainterContext, x: number, y: number): void {

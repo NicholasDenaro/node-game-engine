@@ -15,13 +15,17 @@ export class Canvas2DView implements View {
   private bgColor: string;
   private offsetX: number;
   private offsetY: number;
+  private width: number;
+  private height: number;
 
-  constructor(width: number, height: number, options: { scale?: number, bgColor: string }) {
+  constructor(width: number, height: number, options: { scale?: number, bgColor?: string }) {
     this.scale = options.scale ?? 1;
     this.dpi = 96 * window.window.devicePixelRatio;
-    this.bgColor = options.bgColor ?? '#00FFFFFF';
+    this.bgColor = options.bgColor;
 
     this.canvas = document.createElement('canvas');
+    this.width = width;
+    this.height = height;
     this.canvas.width = width * this.scale;
     this.canvas.height = height * this.scale;
     this.canvas.style.display = 'block';
@@ -53,7 +57,13 @@ export class Canvas2DView implements View {
     return new Rectangle(rect[0].x, rect[0].y, rect[0].width, rect[0].height);
   }
 
+  preScaleSize(): {width: number, height: number} {
+    return {width: this.width, height: this.height};
+  }
+
   resize(width: number, height: number) {
+    this.width = width;
+    this.height = height;
     this.canvas.width = width * this.scale;
     this.canvas.height = height * this.scale;
     this.canvas.style.width = `${this.canvas.width * 96 / this.dpi}px`;
@@ -71,8 +81,10 @@ export class Canvas2DView implements View {
 
   draw(entities: Array<Entity>): void {
     this.ctx.clearRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
-    this.ctx.fillStyle = this.bgColor;
-    this.ctx.fillRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
+    if (this.bgColor) {
+      this.ctx.fillStyle = this.bgColor;
+      this.ctx.fillRect(0, 0, this.canvas.width * this.scale, this.canvas.height * this.scale);
+    }
     this.ctx.scale(this.scale, this.scale);
     this.ctx.translate(-this.offsetX, -this.offsetY);
     const sortedEntities = [...entities].sort(this.entitySortFunction);
@@ -119,7 +131,7 @@ export class Painter2D implements Painter {
 
   paint(args: PainterContext): void {
     this.callback(args);
-  };
+  }
 }
 
 export type PainterContext = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;

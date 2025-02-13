@@ -16,13 +16,15 @@ if (!assets) {
   process.exit(1);
 }
 
+const output = getArg('--output') ?? 'dist';
+
 console.log('running webpack...');
-await execute(`npx webpack --config node_modules/game-engine-packager/webpack.config.js --entry ${entry} --env assets=${assets}`);
+await execute(`npx webpack --config node_modules/game-engine-packager/webpack.config.js --entry ${entry} --env assets=${assets} --env output=${output}`);
 
 console.log('copying index.html...');
 
 if (process.platform === 'win32') {
-  await execute('copy src\\index.html dist-web\\index.html');
+  await execute('copy src\\index.html dist\\index.html');
 } else {
-  await execute('cp src/index.html dist-web/index.html');
+  await execute('cp src/index.html dist/index.html');
 }

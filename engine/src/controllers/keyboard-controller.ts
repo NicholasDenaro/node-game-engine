@@ -1,6 +1,7 @@
 import { Controller, ControllerBinding, ControllerState } from "../controller.js";
 
-export type KeyboardBinding = ControllerBinding<undefined>;
+export type KeyboardDetail = null | undefined;
+export type KeyboardBinding = ControllerBinding<KeyboardDetail>;
 
 export type KeyBinding = { binding: KeyboardBinding, keys: string[] };
 
@@ -33,7 +34,7 @@ export class KeyboardController implements Controller {
     return this.binding(binding)?.is(state);
   }
 
-  getDetails(binding: string): {} | null {
+  getDetails(binding: string): KeyboardDetail | null {
     return this.binding(binding)?.getDetails();
   }
 

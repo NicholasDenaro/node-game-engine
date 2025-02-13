@@ -78,7 +78,7 @@ export class Scene implements CanActivate {
   flushEntityActions() {
     const entitiesToAction = this.entityActionBuffer.splice(0, this.entityActionBuffer.length);
     entitiesToAction.forEach(action => {
-      if (action.add) {
+      if (action.add && action.entity) {
         if (this.entities.indexOf(action.entity) === -1) {
           this.entities.push(action.entity);
           action.entity.add(this);

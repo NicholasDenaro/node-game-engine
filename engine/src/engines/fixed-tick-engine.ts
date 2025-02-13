@@ -34,7 +34,8 @@ export class FixedTickEngine extends Engine {
     if (this.isRunning) {
       let left = this.frameTime - (performance.now() - this.previousTime);
       this.looped = false;
-      while (left < 1) {
+      let loopCount = 0;
+      while (left < 1 && loopCount++ < this.ticksPerSecond) {
         if (this.isRunning) {
           await this.loop();
           this.looped = true;

@@ -49,7 +49,7 @@ export class TileMap extends SpriteEntity {
         const spriteIndex = this.sprites.findIndex(spriteInfo => tileIndex >= spriteInfo.firstgid && tileIndex < spriteInfo.firstgid + spriteInfo.tilecount);
 
 
-        if (this.sprites[spriteIndex].animated) {
+        if (!this.sprites[spriteIndex] || this.sprites[spriteIndex].animated) {
           continue;
         }
 

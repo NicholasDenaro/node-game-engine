@@ -54,8 +54,6 @@ export class SpritePainter extends Painter2D {
       const sx = col * this.options.spriteWidth;
       const sy = row * this.options.spriteHeight;
       if (this.sprite.getImage()) {
-        // ctx.fillStyle = '#FF00FF';
-        // ctx.fillRect(this.rectangle().x, this.rectangle().y, this.rectangle().width, this.rectangle().height);
         ctx.transform(
           this.options.spriteWidth,
           0,
