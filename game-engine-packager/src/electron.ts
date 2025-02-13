@@ -30,8 +30,8 @@ if (firstRun) {
 console.log('cleaning dist-electron/content...');
 await execute(`npx rimraf --glob ./dist-electron/content/*`);
 
-console.log('copying dist-web to dist-electron/content...');
-await execute(`copy .\\dist-web\\ .\\dist-electron\\content\\`);
+console.log('copying dist to dist-electron/content...');
+await execute(`copy .\\dist\\ .\\dist-electron\\content\\`);
 
 console.log('setting electron package.json data...');
 let electronPackageData = JSON.parse(fs.readFileSync(`.\\dist-electron\\package.json`).toString());

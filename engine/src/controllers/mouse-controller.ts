@@ -1,8 +1,8 @@
 import { Controller, ControllerBinding, ControllerState } from "../controller.js";
 
-export type MouseDetails = {x: number, y: number, dx: number, dy: number};
+export type MouseDetail = {x: number, y: number, dx: number, dy: number};
 
-export type MouseBinding = ControllerBinding<MouseDetails>;
+export type MouseBinding = ControllerBinding<MouseDetail>;
 
 export type ButtonBinding = { binding: MouseBinding, buttons: number[] };
 
@@ -39,7 +39,7 @@ export class MouseController implements Controller {
     return this.binding(binding)?.is(state);
   }
 
-  getDetails(binding: string): MouseDetails | null {
+  getDetails(binding: string): MouseDetail | null {
     return this.binding(binding)?.getDetails() || null;
   }
 
@@ -61,7 +61,7 @@ export class MouseController implements Controller {
       this.moveAct = false;
       for (let i = 0; i < keys.length; i++) {
         const binding = this.controls[keys[i]]?.binding;
-        const details: MouseDetails = binding.getDetails();
+        const details: MouseDetail = binding.getDetails();
         binding.update(binding.getState(), { x: details.x, y: details.y, dx: 0, dy: 0});
       }
     }

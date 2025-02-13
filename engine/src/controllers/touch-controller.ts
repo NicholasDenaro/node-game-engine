@@ -1,8 +1,8 @@
 import { Controller, ControllerBinding, ControllerState } from '../controller.js';
 
-export type TouchDetails = {x: number, y: number};
+export type TouchDetail = {x: number, y: number};
 
-export type TouchBinding = ControllerBinding<TouchDetails>;
+export type TouchBinding = ControllerBinding<TouchDetail>;
 
 export type ButtonBinding = { binding: TouchBinding, buttons: number[] };
 
@@ -36,7 +36,7 @@ export class TouchController implements Controller {
     return this.binding(binding)?.is(state);
   }
 
-  getDetails(binding: string): TouchDetails | null {
+  getDetails(binding: string): TouchDetail | null {
     return this.binding(binding)?.getDetails() || null;
   }
 
@@ -65,7 +65,7 @@ export class TouchController implements Controller {
     }
     for (let i = 0; i < keys.length; i++) {
       const binding = this.controls[keys[i]]?.binding;
-      const details: TouchDetails = binding.getDetails();
+      const details: TouchDetail = binding.getDetails();
       binding.update(binding.getState(), { x: details.x, y: details.y});
     }
   }

@@ -1,6 +1,7 @@
 import { Controller, ControllerBinding, ControllerState } from "../controller.js";
 
-export type GamepadBinding = ControllerBinding<{value: number}>;
+export type GamepadDetail = { value: number };
+export type GamepadBinding = ControllerBinding<GamepadDetail>;
 
 export type KeyBinding = { binding: GamepadBinding, buttons: {type: string, index:number}[] };
 
@@ -43,7 +44,7 @@ export class GamepadController implements Controller {
     return this.binding(binding)?.is(state);
   }
 
-  getDetails(binding: string): {} | null {
+  getDetails(binding: string): GamepadDetail | null {
     return this.binding(binding)?.getDetails();
   }
 
